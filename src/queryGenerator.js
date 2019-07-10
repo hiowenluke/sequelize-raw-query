@@ -59,14 +59,19 @@ const me = {
 	},
 
 	getWhereConditions(where, tableName, factory, options) {
+
 		// where usage:
 		// http://docs.sequelizejs.com/manual/querying.html#where
 
+		// Convert $like to [Op.like]
+		// {'fullname': {$like: '%owen%'}} => {'fullname': {[Op.like]: '%owen%'}};
 		where = convert$toOp(where);
+
 		return this.queryGenerator.getWhereConditions(where, tableName, factory, options);
 	},
 
 	getOrderClause(order) {
+
 		// options.order usage:
 		// http://docs.sequelizejs.com/manual/querying.html#ordering
 
@@ -74,6 +79,7 @@ const me = {
 	},
 
 	getLimitClause(options, model) {
+
 		// options.offset, options.limit usage:
 		// http://docs.sequelizejs.com/manual/querying.html#pagination---limiting
 
