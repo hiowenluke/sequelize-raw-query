@@ -1,6 +1,6 @@
 
-const sequelize = require('sequelize');
-const Op = sequelize.Op;
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 // Based on sequelize 5.9.4
 const AbstractQueryGenerator = require('../../sequelize/lib/dialects/abstract/query-generator');
@@ -49,7 +49,7 @@ const me = {
 
 	init(dialect) {
 		const Class = dialect === 'mssql' ? MSSQLQueryGenerator : AbstractQueryGenerator;
-		const queryGenerator = new Class({sequelize, _dialect: dialect});
+		const queryGenerator = new Class({sequelize: Sequelize, _dialect: dialect});
 
 		// These properties will be used in queryGenerator
 		queryGenerator.dialect = dialect;
