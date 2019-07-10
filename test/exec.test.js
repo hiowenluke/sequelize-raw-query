@@ -51,4 +51,63 @@ describe('For exec', () => {
 		const result = await sequery.do(sql, {replacements, templateData});
 		expect(result[0].id === 3).to.be.true;
 	});
+
+	it(`.do(sql, {beforeExec}) // sql = 'select 1 as id'`, async () => {
+		const sql = 'select * from (select 1 as id union select 2 union select 3) m where {condition} and id > :id';
+
+		const beforeExec = ({sql}) => {
+			sql = 'select 1 as id';
+			return {sql};
+		};
+
+		const result = await sequery.do(sql, {beforeExec});
+		expect(result[0].id === 1).to.be.true;
+	});
+
+	it(`.do(sql, beforeExec) // sql = 'select 1 as id'`, async () => {
+		const sql = 'select * from (select 1 as id union select 2 union select 3) m where {condition} and id > :id';
+
+		const beforeExec = ({sql}) => {
+			sql = 'select 1 as id';
+			return {sql};
+		};
+
+		const result = await sequery.do(sql, beforeExec);
+		expect(result[0].id === 1).to.be.true;
+	});
+
+	it(`.do(sql, {afterExec}) // result.push(5)`, async () => {
+		const sql = 'select * from (select 1 as id union select 2 union select 3) m where id > :id';
+
+		const afterExec = (result) => {
+			result.push(5);
+			return result;
+		};
+
+		const result = await sequery.do(sql, {id: 2}, {afterExec});
+		expect(result.length === 2).to.be.true;
+	});
+
+	it(`.do(sql, afterExec) // result.push(5)`, async () => {
+		const sql = 'select * from (select 1 as id union select 2 union select 3) m where id > :id';
+
+		const afterExec = (result) => {
+			result.push(5);
+		};
+
+		const result = await sequery.do(sql, {id: 2}, afterExec);
+		expect(result.length === 2).to.be.true;
+	});
+
+	it(`.do(sql, afterExec) // result = []`, async () => {
+		const sql = 'select * from (select 1 as id union select 2 union select 3) m where id > :id';
+
+		const afterExec = (result) => {
+			result = [];
+			return result;
+		};
+
+		const result = await sequery.do(sql, {id: 2}, afterExec);
+		expect(result.length === 0).to.be.true;
+	});
 });
