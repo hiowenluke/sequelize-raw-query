@@ -1,5 +1,5 @@
 {
-  "name": "sequelize-raw-where",
+  "name": "sequelize-raw-query",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
