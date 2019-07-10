@@ -6,10 +6,16 @@
 	Arguments:
 			sql					The sql statement to execute
 			fieldValues			The value of the parameter field in the sql statement
+			hooks {
+				beforeExec,		After the prepare is complete, the user can further process
+								the sql statement and replacements before executing the sql statement.
+				afterExec, 		After fetching data from db, the user can process the data further
+			}
 
 	Call form:
 			(sql)
 			(sql, fieldValues)
+			(sql, fieldValues, hooks)
 
 	E.g.
 			1. Shorthand
@@ -57,9 +63,10 @@ const prepare = {
 	pickupFromArgs({args}) {
 		let sql;
 		let fieldValues = {}; // provided by replacements and/or templateData
+		let hooks;
 
 		// The first parameter must be the sql statement
-		// The remaining parameters may be fieldValues
+		// The remaining parameters may be fieldValues, hooks
 		sql = args.shift();
 
 		// If there are no remaining parameters, then do nothing
@@ -67,13 +74,39 @@ const prepare = {
 			// do nothing
 		}
 
-		// If there is one parameter left, it must be fieldValues
+		// If there is one parameter left, it may be fieldValues or hooks
 		if (args.length === 1) {
+			const arg = args[0];
+
+			// If arg is a function, wrap it as a hooks object
+			if (typeof arg === 'function') {
+				hooks = {};
+				hooks[arg.name] = arg;
+			}
+
+			// If the first property of arg is function, then it is hooks
+			else if (typeof arg[Object.keys(arg)[0]] === 'function') {
+				hooks = arg;
+			}
+			else {
+				fieldValues = arg;
+			}
+		}
+
+		// If there are two parameters left, the first one is fieldValues and the second one is hooks
+		if (args.length === 2) {
 			fieldValues = args[0];
+			hooks = args[1];
+
+			// If hooks is a function, wrap it as object
+			if (typeof hooks === 'function') {
+				const fn = hooks;
+				hooks[fn.name] = fn;
+			}
 		}
 
 		// Save to this.args to pass them to the next functions for kdo
-		this.setArgs({sql, fieldValues});
+		this.setArgs({sql, fieldValues, hooks});
 	},
 
 	// ------------------------------------------------------------------------
@@ -229,9 +262,16 @@ const prepare = {
 		this.setArgs({sql});
 	},
 
+	beforeExec(args) {
+		if (!args.hooks || !args.hooks.beforeExec) return;
+
+		args = args.hooks.beforeExec(args);
+		this.setArgs(args);
+	},
+
 	return() {
-		const {sql, commandType, replacements} = this.args;
-		return {sql, commandType, replacements};
+		const {sql, commandType, replacements, hooks} = this.args;
+		return {sql, commandType, replacements, hooks};
 	}
 };
 
@@ -266,6 +306,15 @@ const fetchData = {
 		}
 
 		this.setArgs({result});
+	},
+
+	afterExec({result, hooks}) {
+		if (!hooks || !hooks.afterExec) return;
+
+		const newResult = hooks.afterExec(result);
+
+		// If there is a new result, use it
+		newResult && this.setArgs({result: newResult});
 	},
 
 	return({result}) {
