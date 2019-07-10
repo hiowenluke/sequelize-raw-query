@@ -1,10 +1,12 @@
 
 const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
+const config = require('./config');
 
 // Based on sequelize 5.9.4
 const AbstractQueryGenerator = require('../../sequelize/lib/dialects/abstract/query-generator');
 const MSSQLQueryGenerator = require('../../sequelize/lib/dialects/mssql/query-generator');
+
+const Op = Sequelize.Op;
 
 const convert$toOp = (where) => {
 	const jsonStr = JSON.stringify(where);
@@ -47,9 +49,10 @@ const getOrderStr = (order) => {
 const me = {
 	queryGenerator: null,
 
-	init(dialect) {
-		const Class = dialect === 'mssql' ? MSSQLQueryGenerator : AbstractQueryGenerator;
-		const queryGenerator = new Class({sequelize: Sequelize, _dialect: dialect});
+	init() {
+		const dialect = config.dialect;
+		const QueryGenerator = dialect === 'mssql' ? MSSQLQueryGenerator : AbstractQueryGenerator;
+		const queryGenerator = new QueryGenerator({sequelize: Sequelize, _dialect: dialect});
 
 		// These properties will be used in queryGenerator
 		queryGenerator.dialect = dialect;
