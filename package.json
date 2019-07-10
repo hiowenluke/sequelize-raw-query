@@ -21,5 +21,10 @@
     "mssql": "^5.1.0",
     "mysql2": "^1.6.5",
     "tedious": "3.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "superagent": "^4.1.0"
   }
 }
