@@ -46,6 +46,14 @@ describe('For exec', () => {
 		expect(result.length === 2).to.be.true;
 	});
 
+	it(`.do(sql, {replacements, templateData}) // replacements = {id: 2}, templateData = {condition: 'id > 1'}`, async () => {
+		const sql = `select * from ${table} m where {condition} and id > :id`;
+		const replacements = {id: 2};
+		const templateData = {condition: 'id > 1'};
+		const result = await sequery.do(sql, {replacements, templateData});
+		expect(result[0].id === 3).to.be.true;
+	});
+
 	it(`.do(sql, templateData) // templateData = {id: 1, table}`, async () => {
 		const sql = `select * from {table} m where id > {id}`;
 		const result = await sequery.do(sql, {id: 1, table});
