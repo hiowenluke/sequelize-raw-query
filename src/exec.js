@@ -48,8 +48,6 @@
 * */
 
 const kdo = require('kdo');
-kdo.config(true);
-
 const Sequelize = require('sequelize');
 const config = require('./config');
 
