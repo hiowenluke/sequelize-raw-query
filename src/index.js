@@ -6,9 +6,12 @@ const Sequelize = require('sequelize');
 
 const me = Object.assign(Object.create(queryGenerator), {
 	init(cfg) {
+
 		config.init(cfg);
 		exec.init();
 		queryGenerator.init();
+
+		// See ../test/generator.test.js for usage
 		this.Op = Sequelize.Op;
 	},
 
