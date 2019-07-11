@@ -86,7 +86,7 @@ const me = {
 		this.queryGenerator = queryGenerator;
 	},
 
-	getWhereConditions(where, tableName, options) {
+	getWhereConditions(where, tableName) {
 
 		// where usage:
 		// http://docs.sequelizejs.com/manual/querying.html#where
@@ -103,7 +103,7 @@ const me = {
 			where = convert$toOp(where);
 		}
 
-		return this.queryGenerator.getWhereConditions(where, tableName, null, options);
+		return this.queryGenerator.getWhereConditions(where, tableName);
 	},
 
 	getOrderClause(order, tableName) {
