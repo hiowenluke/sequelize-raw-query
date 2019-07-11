@@ -1,12 +1,17 @@
 
-const sequery = require('../src');
+const sequery = require('../../src');
 const expect = require('chai').expect;
-const config = require('./config');
+const config = require('../__config/default');
 
-describe('For exec', () => {
-	sequery.init(config);
+describe('For exec', async () => {
 
 	const table = '(select 1 as id union select 2 union select 3)';
+
+	it('init sequery', async () => {
+
+		// We can use any of the configurations of mssql and mysql for this test cases file.
+		sequery.init(config.use('mssql'));
+	});
 
 	it(`.do(sql)`, async () => {
 		const sql = `select * from ${table} m`;
@@ -89,7 +94,6 @@ describe('For exec', () => {
 
 		const afterExec = (result) => {
 			result.push(5);
-			return result;
 		};
 
 		const result = await sequery.do(sql, {id: 2}, {afterExec});
