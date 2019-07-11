@@ -4,7 +4,8 @@ const config = require('./config');
 
 const path = require('path');
 
-// Absolute path relative to this file
+// The absolute path of this file:
+// ./node_modules/sequelize-raw-query/src/queryGenerator.js
 const root = path.resolve(module.filename, '../../../');
 
 // Based on sequelize 5.9.4
@@ -77,6 +78,8 @@ const getOrderStr = (order, tableName) => {
 };
 
 const me = {
+	queryGenerator: null,
+
 	init() {
 		const dialect = config.dialect;
 		const QueryGenerator = dialect === 'mssql' ? MSSQLQueryGenerator : AbstractQueryGenerator;
@@ -86,7 +89,7 @@ const me = {
 		queryGenerator.dialect = dialect;
 		queryGenerator.sequelize = {options: {}};
 
-		return queryGenerator;
+		this.queryGenerator = queryGenerator;
 	},
 
 	getWhereConditions(where, tableName) {

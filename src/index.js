@@ -8,8 +8,7 @@ const me = Object.assign(Object.create(queryGenerator), {
 	init(cfg) {
 		config.init(cfg);
 		exec.init();
-
-		this.queryGenerator = queryGenerator.init();
+		queryGenerator.init();
 		this.Op = Sequelize.Op;
 	},
 
