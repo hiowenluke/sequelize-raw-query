@@ -2,9 +2,14 @@
 const Sequelize = require('sequelize');
 const config = require('./config');
 
+const path = require('path');
+
+// Absolute path relative to this file
+const root = path.resolve(module.filename, '../../../');
+
 // Based on sequelize 5.9.4
-const AbstractQueryGenerator = require('../../sequelize/lib/dialects/abstract/query-generator');
-const MSSQLQueryGenerator = require('../../sequelize/lib/dialects/mssql/query-generator');
+const AbstractQueryGenerator = require(root + '/sequelize/lib/dialects/abstract/query-generator');
+const MSSQLQueryGenerator = require(root + '/sequelize/lib/dialects/mssql/query-generator');
 
 const Op = Sequelize.Op;
 
