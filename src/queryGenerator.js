@@ -37,7 +37,7 @@ const convert$toOp = (where) => {
 	return where;
 };
 
-const getOrderStr = (order, tableAs) => {
+const getOrderStr = (order, tableName) => {
 	let orderStr = '';
 
 	// If order is a string, use it
@@ -61,8 +61,8 @@ const getOrderStr = (order, tableAs) => {
 		}
 	}
 
-	if (tableAs) {
-		const prefix = `[${tableAs}].`;
+	if (tableName) { // fullname or prefix such as 'm'
+		const prefix = `[${tableName}].`;
 		orderStr = orderStr.replace(/^|(,\s*)/g, (match) => {
 			return match !== '' ? ', ' + prefix : prefix;
 		})
@@ -106,12 +106,12 @@ const me = {
 		return this.queryGenerator.getWhereConditions(where, tableName, null, options);
 	},
 
-	getOrderClause(order, tableAs) {
+	getOrderClause(order, tableName) {
 
 		// options.order usage:
 		// http://docs.sequelizejs.com/manual/querying.html#ordering
 
-		return getOrderStr(order, tableAs);
+		return getOrderStr(order, tableName);
 	},
 
 	getLimitClause(options) {
