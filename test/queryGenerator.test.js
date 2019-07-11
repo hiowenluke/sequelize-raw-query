@@ -70,7 +70,7 @@ describe('For queryGenerator', () => {
 		expect(orderStr === ' order by type, name desc').to.be.true;
 	});
 
-	it(`.getOrderClause(order, tableAs)`, () => {
+	it(`.getOrderClause(order, tableAs) // order = ['type', 'name desc'], tableAs = 'm'`, () => {
 		const order = ['type', 'name desc'];
 		const tableAs = 'm';
 		const orderStr = sequery.getOrderClause(order, tableAs);
