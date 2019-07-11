@@ -6,8 +6,8 @@ const config = require('./config');
 describe('For queryGenerator', () => {
 	sequery.init(config);
 
-	it('.getWhereConditions()', () => {
-		const where = {"id": {$eq: 2}};
+	it(`.getWhereConditions(where) // where = {"id": 2}`, () => {
+		const where = {"id": 2};
 		const whereStr = sequery.getWhereConditions(where);
 		expect(whereStr === '[id] = 2').to.be.true;
 	});
