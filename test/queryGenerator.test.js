@@ -49,11 +49,15 @@ describe('For queryGenerator', () => {
 		expect(orderStr === ' order by [m].type, [m].name desc').to.be.true;
 	});
 
+	it(`.getLimitClause(options) // options = {order: 'id', limit: 10, offset: 5}`, () => {
+		const options = {order: 'id', limit: 10, offset: 5};
+		const limitStr = sequery.getLimitClause(options);
+		expect(limitStr === ' order by id offset 5 rows fetch next 10 rows only').to.be.true;
 	});
 
-	it('.getLimitClause()', () => {
-		const limitOffset = {limit: 10, offset: 5};
-		const limitStr = sequery.getLimitClause(limitOffset);
-		expect(limitStr === 'offset 5 rows fetch next 10 rows only').to.be.true;
+	it(`.getLimitClause(options) // options = {order: 'id', tableAs: 'm', limit: 10, offset: 5}`, () => {
+		const options = {order: 'id', tableAs: 'm', limit: 10, offset: 5};
+		const limitStr = sequery.getLimitClause(options);
+		expect(limitStr === ' order by [m].id offset 5 rows fetch next 10 rows only').to.be.true;
 	});
 });
