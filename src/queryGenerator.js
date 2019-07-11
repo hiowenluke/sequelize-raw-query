@@ -89,16 +89,23 @@ const me = {
 		return getOrderStr(order, tableAs);
 	},
 
-	getLimitClause(options, model) {
+	getLimitClause(options) {
 
 		// options.offset, options.limit usage:
 		// http://docs.sequelizejs.com/manual/querying.html#pagination---limiting
 
+		// Initialize order
+		const {order, tableAs} = options;
+		if (!order) throw new Error('The order is missing. Offset and limit need to be used with order');
+
+		const orderStr = this.getOrderClause(order, tableAs);
+
 		// Set options.order to an empty array to avoid errors for sequelize
 		options.order = [];
+		delete options.tableAs;
+		const limitStr = this.queryGenerator.addLimitAndOffset(options);
 
-		const limitStr = this.queryGenerator.addLimitAndOffset(options, model);
-		return limitStr.toLowerCase().replace(/^\s*/g, '');
+		return orderStr + limitStr.toLowerCase();
 	}
 };
 
