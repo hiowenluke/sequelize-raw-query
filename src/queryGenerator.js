@@ -77,8 +77,6 @@ const getOrderStr = (order, tableName) => {
 };
 
 const me = {
-	queryGenerator: null,
-
 	init() {
 		const dialect = config.dialect;
 		const QueryGenerator = dialect === 'mssql' ? MSSQLQueryGenerator : AbstractQueryGenerator;
@@ -88,7 +86,7 @@ const me = {
 		queryGenerator.dialect = dialect;
 		queryGenerator.sequelize = {options: {}};
 
-		this.queryGenerator = queryGenerator;
+		return queryGenerator;
 	},
 
 	getWhereConditions(where, tableName) {
