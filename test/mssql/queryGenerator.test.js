@@ -1,10 +1,13 @@
 
-const sequery = require('../src');
+const sequery = require('../../src');
 const expect = require('chai').expect;
-const config = require('./config');
+const config = require('../__config/default');
 
-describe('For queryGenerator', () => {
-	sequery.init(config);
+describe('MSSQL - queryGenerator', async () => {
+
+	it('init sequery', () => {
+		sequery.init(config.use('mssql'));
+	});
 
 	it(`.getWhereConditions(where) // where = {"id": 2}`, () => {
 		const where = {"id": 2};
