@@ -8,8 +8,25 @@ const MSSQLQueryGenerator = require('../../sequelize/lib/dialects/mssql/query-ge
 
 const Op = Sequelize.Op;
 
+const isHasSymbol = (where) => {
+	if (Object.getOwnPropertySymbols(where).length) {
+		return true;
+	}
+
+	const item = Object.keys(where).find(key => {
+		const item = where[key];
+		if (typeof item === 'object') {
+			if (isHasSymbol(item)) {
+				return item;
+			}
+		}
+	});
+
+	return !!item;
+};
+
 const convert$toOp = (where) => {
-	const jsonStr = JSON.stringify(where);
+	const jsonStr = typeof where === 'object' ? JSON.stringify(where) : where;
 	const str = jsonStr.replace(/"\$(\S+?)"/g, (str) => {
 		return "[Op." + str.replace(/[$"]/g, '') + "]";
 	});
@@ -69,16 +86,24 @@ const me = {
 		this.queryGenerator = queryGenerator;
 	},
 
-	getWhereConditions(where, tableName, factory, options) {
+	getWhereConditions(where, tableName, options) {
 
 		// where usage:
 		// http://docs.sequelizejs.com/manual/querying.html#where
 
-		// Convert $like to [Op.like]
-		// {'fullname': {$like: '%owen%'}} => {'fullname': {[Op.like]: '%owen%'}};
-		where = convert$toOp(where);
+		if (!where) return '';
 
-		return this.queryGenerator.getWhereConditions(where, tableName, factory, options);
+		// If symbol is used in the where object
+		if (typeof where === 'object' && isHasSymbol(where)) {
+			// do nothing
+		}
+		else {
+			// Convert $like to [Op.like]
+			// {'fullname': {$like: '%owen%'}} => {'fullname': {[Op.like]: '%owen%'}};
+			where = convert$toOp(where);
+		}
+
+		return this.queryGenerator.getWhereConditions(where, tableName, null, options);
 	},
 
 	getOrderClause(order, tableAs) {
