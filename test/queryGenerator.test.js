@@ -83,9 +83,10 @@ describe('For queryGenerator', () => {
 		expect(limitStr === ' order by id offset 5 rows fetch next 10 rows only').to.be.true;
 	});
 
-	it(`.getLimitClause(options) // options = {order: 'id', tableAs: 'm', limit: 10, offset: 5}`, () => {
+	it(`.getLimitClause(options, tableAs) // options = {order: 'id', limit: 10, offset: 5}, tableAs = 'm'`, () => {
 		const options = {order: 'id', tableAs: 'm', limit: 10, offset: 5};
-		const limitStr = sequery.getLimitClause(options);
+		const tableAs = 'm';
+		const limitStr = sequery.getLimitClause(options, tableAs);
 		expect(limitStr === ' order by [m].id offset 5 rows fetch next 10 rows only').to.be.true;
 	});
 });
