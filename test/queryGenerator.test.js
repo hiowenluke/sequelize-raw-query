@@ -12,10 +12,38 @@ describe('For queryGenerator', () => {
 		expect(whereStr === '[id] = 2').to.be.true;
 	});
 
+	it(`.getWhereConditions(where, tableAs) // where = {"id": 2}, tableAs = 'm'`, () => {
+		const where = {"id": 2};
+		const tableAs = 'm';
+		const whereStr = sequery.getWhereConditions(where, tableAs);
+		expect(whereStr === '[m].[id] = 2').to.be.true;
+	});
+
+	it(`.getWhereConditions(where) // where = '{"id": 2}'`, () => {
+		const where = '{"id": 2}';
+		const whereStr = sequery.getWhereConditions(where);
+		expect(whereStr === '[id] = 2').to.be.true;
+	});
+
 	it(`.getWhereConditions(where) // where = {"id": {$gt: 2}}`, () => {
 		const where = {"id": {$gt: 2}};
 		const whereStr = sequery.getWhereConditions(where);
 		expect(whereStr === '[id] > 2').to.be.true;
+	});
+
+	it(`.getWhereConditions(where) // where = {id: {[Op.or]: {[Op.lt]: 1000, [Op.eq]: null}}}`, () => {
+		const Op = sequery.Op;
+		const where = {
+			id: {
+				[Op.or]: {
+					[Op.lt]: 1000,
+					[Op.eq]: null
+				}
+			}
+		};
+
+		const whereStr = sequery.getWhereConditions(where);
+		expect(whereStr === '([id] < 1000 OR [id] IS NULL)').to.be.true;
 	});
 
 	it(`.getOrderClause(order) // order = 'id'`, () => {
