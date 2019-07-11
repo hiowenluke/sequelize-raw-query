@@ -20,11 +20,12 @@ const convert$toOp = (where) => {
 	return where;
 };
 
-const getOrderStr = (order) => {
+const getOrderStr = (order, tableAs) => {
+	let orderStr = '';
 
-	// If order is a string, no processing is required
+	// If order is a string, use it
 	if (typeof order === 'string') { // 'type, name desc'
-		// do nothing
+		orderStr = order;
 	}
 
 	// If order is an array, convert to a string
@@ -33,17 +34,24 @@ const getOrderStr = (order) => {
 		// Convert a one-dimensional array to a string:
 		// ['type', 'name'] => 'type, name'
 		if (typeof order[0] === 'string') {
-			order = order.join(', '); //
+			orderStr = order.join(', '); //
 		}
 
 		// Convert a two-dimensional array to a string:
 		// [['type'], ['name', 'desc']] => 'type, name desc'
 		if (Array.isArray(order[0])) {
-			order = order.map(item => item.join(' ')).join(', ');
+			orderStr = order.map(item => item.join(' ')).join(', ');
 		}
 	}
 
-	return 'order by ' + order;
+	if (tableAs) {
+		const prefix = `[${tableAs}].`;
+		orderStr = orderStr.replace(/^|(,\s*)/g, (match) => {
+			return match !== '' ? ', ' + prefix : prefix;
+		})
+	}
+
+	return orderStr ? ' order by ' + orderStr : '';
 };
 
 const me = {
@@ -73,12 +81,12 @@ const me = {
 		return this.queryGenerator.getWhereConditions(where, tableName, factory, options);
 	},
 
-	getOrderClause(order) {
+	getOrderClause(order, tableAs) {
 
 		// options.order usage:
 		// http://docs.sequelizejs.com/manual/querying.html#ordering
 
-		return getOrderStr(order);
+		return getOrderStr(order, tableAs);
 	},
 
 	getLimitClause(options, model) {
