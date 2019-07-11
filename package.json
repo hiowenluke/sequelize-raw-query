@@ -18,6 +18,7 @@
   "homepage": "https://github.com/hiowenluke/sequelize-raw-where#readme",
   "dependencies": {
     "kdo": "^1.5.7",
+    "mysql2": "^1.6.5",
     "sequelize": "5.9.4",
     "tedious": "^6.2.0"
   },

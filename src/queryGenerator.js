@@ -67,8 +67,16 @@ const getOrderStr = (order, tableName) => {
 		}
 	}
 
-	if (tableName) { // fullname or prefix such as 'm'
-		const prefix = `[${tableName}].`;
+	// type, name desc => `type`, `name` desc
+	if (config.dialect === 'mysql') {
+		orderStr = orderStr.replace(/\w+/g, (match) => {
+			const word = match.toLowerCase();
+			return word === 'desc' || word === 'asc' ? word : '`' + match + '`';
+		});
+	}
+
+	if (tableName) { // fullname or prefix such as "[m]." (mssql) or "`m`." (mysql)
+		const prefix = config.dialect === 'mssql' ? '[' + tableName + '].' : '`' + tableName + '`.';
 		orderStr = orderStr.replace(/^|(,\s*)/g, (match) => {
 			return match !== '' ? ', ' + prefix : prefix;
 		})
