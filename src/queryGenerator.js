@@ -86,8 +86,6 @@ const getOrderStr = (order, tableName) => {
 };
 
 const me = {
-	queryGenerator: null,
-
 	init() {
 		const dialect = config.dialect;
 		const QueryGenerator = dialect === 'mssql' ? MSSQLQueryGenerator : AbstractQueryGenerator;
@@ -97,7 +95,8 @@ const me = {
 		queryGenerator.dialect = dialect;
 		queryGenerator.sequelize = {options: {}};
 
-		this.queryGenerator = queryGenerator;
+		// Save queryGenerator to global
+		global.__sequelize_raw_query.queryGenerator = queryGenerator;
 	},
 
 	getWhereConditions(where, tableName) {
@@ -117,7 +116,7 @@ const me = {
 			where = convert$toOp(where);
 		}
 
-		return this.queryGenerator.getWhereConditions(where, tableName);
+		return global.__sequelize_raw_query.queryGenerator.getWhereConditions(where, tableName);
 	},
 
 	getOrderClause(order, tableName) {
@@ -141,7 +140,7 @@ const me = {
 
 		// Set options.order to an empty array to avoid errors for sequelize
 		options.order = [];
-		const limitStr = this.queryGenerator.addLimitAndOffset(options);
+		const limitStr = global.__sequelize_raw_query.queryGenerator.addLimitAndOffset(options);
 
 		return orderStr + limitStr.toLowerCase();
 	}
