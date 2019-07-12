@@ -11,7 +11,7 @@ const me = {
 		exec.init();
 		queryGenerator.init();
 
-		// See ../test/generator.test.js for usage
+		// See ../test/mysql/queryGenerator.test.js for usage
 		this.Op = Sequelize.Op;
 
 		return this;
