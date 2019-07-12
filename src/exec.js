@@ -4,45 +4,46 @@
 	---------------------------------------------------------------
 
 	Arguments:
-			sql					The sql statement to execute
-			fieldValues			The value of the parameter field in the sql statement
-			hooks {
-				beforeExec,		After the prepare is complete, the user can further process
-								the sql statement and replacements before executing the sql statement.
-				afterExec, 		After fetching data from db, the user can process the data further
-			}
+		sql					The sql statement to execute
+		fieldValues			The value of the parameter field in the sql statement
+		hooks {
+			beforeExec,		After the prepare is complete, the user can further process
+							the sql statement and replacements before executing the sql statement.
+
+			afterExec, 		After fetching data from db, the user can process the data further
+		}
 
 	Call form:
-			(sql)
-			(sql, fieldValues)
-			(sql, fieldValues, hooks)
+		(sql)
+		(sql, fieldValues)
+		(sql, fieldValues, hooks)
 
 	E.g.
-			1. Shorthand
-				(sql)
-				(sql, {id: 1})
+		1. Shorthand
+			(sql)
+			(sql, {id: 1})
 
-			2. Complete
-				(sql, {replacements: {id: 1}})
-				(sql, {templateData: {id: 1}})
-		 		(sql, {templateData: {dateCondition: 'date between "2019-05-01" and "2019-05-31"'}})
-		 		(sql, {replacements: {id: 1}, templateData: {dateCondition: 'date between "2019-05-01" and "2019-05-31"'})
+		2. Complete
+			(sql, {replacements: {id: 1}})
+			(sql, {templateData: {id: 1}})
+			(sql, {templateData: {dateCondition: 'date between "2019-05-01" and "2019-05-31"'}})
+			(sql, {replacements: {id: 1}, templateData: {dateCondition: 'date between "2019-05-01" and "2019-05-31"'})
 
 	About replacements and templateData:
 
-			1. The difference
+		1. The difference
 
-				replacements		The parameter form ":xxx" is used to specify the field value, for example "id = :id"
-				templateData		The parameter form "{xxx}" is used to construct sql statements such as "where id > {id} and {dateCondition}"
+			replacements		The parameter form ":xxx" is used to specify the field value, for example "id = :id"
+			templateData		The parameter form "{xxx}" is used to construct sql statements such as "where id > {id} and {dateCondition}"
 
-				templateData contains the functionality of replacements.
-				This is to avoid using both the replacements and templateData.
+			templateData contains the functionality of replacements.
+			This is to avoid using both the replacements and templateData.
 
-			2. Precautions
+		2. Precautions
 
-				The names of replacements and templateData can be omitted and the program
-				automatically recognizes them. For example, the following is equivalent:
-				(sql, {id: 1}) => (sql, {replacements: {id: 1}})
+			The names of replacements and templateData can be omitted and the program
+			automatically recognizes them. For example, the following is equivalent:
+			(sql, {id: 1}) => (sql, {replacements: {id: 1}})
 
 	---------------------------------------------------------------
 * */
@@ -61,7 +62,7 @@ const prepare = {
 		let hooks;
 
 		// The first parameter must be the sql statement
-		// The remaining parameters may be fieldValues, hooks
+		// The remaining parameters may be fieldValues or hooks
 		sql = args.shift();
 
 		// If there are no remaining parameters, then do nothing
@@ -105,7 +106,7 @@ const prepare = {
 	},
 
 	// ------------------------------------------------------------------------
-	// Parameter preprocessing
+	// Parameter pre-processing
 	// ------------------------------------------------------------------------
 	initArgs({sql, fieldValues}) {
 		let okValues = {};
@@ -120,8 +121,8 @@ const prepare = {
 				delete fieldValues[prop];
 			});
 
-			// If no replacements are specified, an attempt is made to automatically identify
-			// whether it is a replacements from the sql statement
+			// If no replacements are specified, an attempt is made to
+			// automatically identify replacements from the sql statement
 			if (!okValues.replacements) {
 
 				// If there is a :xxx parameter in the sql statement, the options is replacements
@@ -130,8 +131,8 @@ const prepare = {
 				}
 			}
 
-			// If there is no replacements and templateData is not specified,
-			// then try to automatically identify whether it is a templateData from the sql statement
+			// If there is no replacements, and templateData is not specified,
+			// then try to automatically identify templateData from the sql statement
 			if (!okValues.replacements && !okValues.templateData) {
 
 				// If there is a :xxx parameter in the sql statement, the options is templateData
@@ -170,8 +171,8 @@ const prepare = {
 	// ------------------------------------------------------------------------
 	// Fetch commandType
 	// ------------------------------------------------------------------------
-	// If the action type is insert/update/delete, add the commandType parameter so that
-	// sequelize returns a more accurate result of the operation.
+	// If the action type is insert/update/delete, add the commandType parameter
+	// so that sequelize returns a more accurate result of the operation.
 
 	// Refer to the following comparison:
 
@@ -205,18 +206,18 @@ const prepare = {
 			replacements[prop] === undefined && (replacements[prop] = null);
 		});
 
-		// This function modifies the properties of the replacements and does not
-		// replace the object, so there is no need to save the replacements to this.args.
+		// This function modifies the properties of the replacements, but does not
+		// reset it, so there is no need to save the replacements to this.args.
 	},
 
 	// ------------------------------------------------------------------------
-	// If it is an update operation, we need to set the set field in the sql
-	// statement according to the properties of the replacements
+	// If it is an update operation, we need to set the set field in the
+	// sql statement according to the properties of the replacements
 
 	// For example:
 	// 		If there are 10 fields in the sql statement, but there are only 3 fields
 	// 		in the replacements, then only these three fields should be set, and
-	// 		the remaining fields still retain the previous values.
+	// 		the remaining fields still retain the old values.
 	// ------------------------------------------------------------------------
 	forUpdate({sql, commandType, replacements}) {
 		if (!(commandType === 'update' && replacements)) return;
@@ -235,7 +236,7 @@ const prepare = {
 		const fields = params.map(param => param.substr(1));
 		const replacementsKeys = Object.keys(replacements);
 
-		// Delete fields that do not exist in replacements
+		// Delete fields which do not exist in replacements
 		let i = fields.length;
 		while (i --) { // Delete from back to front
 
@@ -245,13 +246,14 @@ const prepare = {
 			}
 		}
 
-		// If the field does not change, or if there are no remaining fields, it will not be processed
+		// If the field does not change, or there are no remaining fields, break
 		if (params.length === fields.length || !fields.length) return;
 
 		// Construct a new set statement based on the remaining fields
 		let newSetStr = fields.map(field => field + '=:' + field).join(',');
 		newSetStr = ' ' + newSetStr + ' ';
 
+		// The final sql statement
 		sql = sql.replace(setStr, newSetStr);
 
 		this.setArgs({sql});
@@ -273,7 +275,7 @@ const prepare = {
 const fetchData = {
 	async execSql({sql, commandType, replacements}) {
 
-		// Use the raw parameter to indicate the execution of the original query
+		// Use the "raw" parameter to indicate the execution of the raw query
 		const seqOptions = {replacements, raw: true};
 
 		// Append to seqOptions if there is a commandType (insert/delete/update)
@@ -283,7 +285,7 @@ const fetchData = {
 
 		let result = await global.__sequelize_raw_query.sequelize.query(sql, seqOptions);
 
-		// If it is delete, the result is null, then it will not continue processing
+		// If it is delete, the result is null, then return null
 		if (!result) return null;
 
 		// If it is insert/update, take the value from result[1]
