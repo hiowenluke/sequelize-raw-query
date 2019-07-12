@@ -1,5 +1,4 @@
 
-// Save config to global
 const me = {
 
 	// database: 'test',
@@ -39,9 +38,9 @@ const me = {
 		},
 	},
 
-	init(cfg) {
+	init(config) {
 		// Save config to global
-		global.__sequelize_raw_query.config = cfg;
+		global.__sequelize_raw_query.config = config;
 	}
 };
 
