@@ -1,7 +1,5 @@
 
 const Sequelize = require('sequelize');
-const config = require('./config');
-
 const path = require('path');
 
 // The absolute path of this file:
@@ -44,6 +42,7 @@ const convert$toOp = (where) => {
 };
 
 const getOrderStr = (order, tableName) => {
+	const dialect = global.__sequelize_raw_query.config.dialect;
 	let orderStr = '';
 
 	// If order is a string, use it
@@ -68,7 +67,7 @@ const getOrderStr = (order, tableName) => {
 	}
 
 	// type, name desc => `type`, `name` desc
-	if (config.dialect === 'mysql') {
+	if (dialect === 'mysql') {
 		orderStr = orderStr.replace(/\w+/g, (match) => {
 			const word = match.toLowerCase();
 			return word === 'desc' || word === 'asc' ? word : '`' + match + '`';
@@ -76,7 +75,7 @@ const getOrderStr = (order, tableName) => {
 	}
 
 	if (tableName) { // fullname or prefix such as "[m]." (mssql) or "`m`." (mysql)
-		const prefix = config.dialect === 'mssql' ? '[' + tableName + '].' : '`' + tableName + '`.';
+		const prefix = dialect === 'mssql' ? '[' + tableName + '].' : '`' + tableName + '`.';
 		orderStr = orderStr.replace(/^|(,\s*)/g, (match) => {
 			return match !== '' ? ', ' + prefix : prefix;
 		})
@@ -87,6 +86,7 @@ const getOrderStr = (order, tableName) => {
 
 const me = {
 	init() {
+		const config = global.__sequelize_raw_query.config;
 		const dialect = config.dialect;
 		const QueryGenerator = dialect === 'mssql' ? MSSQLQueryGenerator : AbstractQueryGenerator;
 		const queryGenerator = new QueryGenerator({sequelize: Sequelize, _dialect: dialect});

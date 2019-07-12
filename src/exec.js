@@ -49,7 +49,6 @@
 
 const kdo = require('kdo');
 const Sequelize = require('sequelize');
-const config = require('./config');
 
 const prepare = {
 
@@ -320,6 +319,7 @@ const fetchData = {
 
 const me = {
 	init() {
+		const config = global.__sequelize_raw_query.config;
 		const {database, username, password} = config;
 		const options = config;
 		const sequelize = new Sequelize(database, username, password, options);
