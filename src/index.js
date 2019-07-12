@@ -13,6 +13,8 @@ const me = Object.assign(Object.create(queryGenerator), {
 
 		// See ../test/generator.test.js for usage
 		this.Op = Sequelize.Op;
+
+		return this;
 	},
 
 	async do(...args) {
