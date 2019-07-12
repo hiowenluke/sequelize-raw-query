@@ -259,11 +259,16 @@ const prepare = {
 		this.setArgs({sql});
 	},
 
-	beforeExec(args) {
-		if (!args.hooks || !args.hooks.beforeExec) return;
+	beforeExec({sql, replacements, hooks}) {
+		if (!hooks || !hooks.beforeExec) return;
 
-		args = args.hooks.beforeExec(args);
-		this.setArgs(args);
+		const newArgs = hooks.beforeExec({sql, replacements});
+
+		if (newArgs && typeof newArgs === 'object') {
+			const {sql, replacements} = newArgs;
+			sql && this.setArgs({sql});
+			replacements && this.setArgs({replacements});
+		}
 	},
 
 	return() {
