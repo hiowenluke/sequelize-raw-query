@@ -65,7 +65,7 @@ describe('For exec', async () => {
 		expect(result.length === 2).to.be.true;
 	});
 
-	it(`.do(sql, {beforeExec}) // sql = 'select 1 as id'`, async () => {
+	it(`.do(sql, {beforeExec}) // return {sql: 'select 1 as id'}`, async () => {
 		const sql = `select * from ${table} m where {condition} and id > :id`;
 
 		const beforeExec = ({sql}) => {
@@ -77,7 +77,7 @@ describe('For exec', async () => {
 		expect(result[0].id === 1).to.be.true;
 	});
 
-	it(`.do(sql, beforeExec) // sql = 'select 1 as id'`, async () => {
+	it(`.do(sql, beforeExec) // return {sql: 'select 1 as id'}`, async () => {
 		const sql = `select * from ${table} m where {condition} and id > :id`;
 
 		const beforeExec = ({sql}) => {
