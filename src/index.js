@@ -4,7 +4,7 @@ const exec = require('./exec');
 const queryGenerator = require('./queryGenerator');
 const Sequelize = require('sequelize');
 
-const me = {
+const me = Object.assign(Object.create(queryGenerator), {
 	init(cfg) {
 
 		config.init(cfg);
@@ -19,19 +19,7 @@ const me = {
 
 	async do(...args) {
 		return await exec.do(...args);
-	},
-
-	getWhereConditions(...args) {
-		return queryGenerator.getWhereConditions(...args);
-	},
-
-	getOrderClause(...args) {
-		return queryGenerator.getOrderClause(...args);
-	},
-
-	getLimitClause(...args) {
-		return queryGenerator.getLimitClause(...args);
 	}
-};
+});
 
 module.exports = me;
