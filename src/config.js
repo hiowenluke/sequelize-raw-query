@@ -1,6 +1,6 @@
 
 // Save config to global
-global.__sequelize_raw_query.config = {
+const me = {
 
 	// database: 'test',
 	// username: 'sa',
@@ -40,8 +40,9 @@ global.__sequelize_raw_query.config = {
 	},
 
 	init(cfg) {
-		Object.assign(this, cfg);
+		// Save config to global
+		global.__sequelize_raw_query.config = cfg;
 	}
 };
 
-module.exports = global.__sequelize_raw_query.config;
+module.exports = me;
