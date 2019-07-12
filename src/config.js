@@ -23,15 +23,16 @@ const me = {
 		// For sequelize.define()
 		define: {
 
-			// 禁止 sequelize 自动给表名加 s 变为复数
+			// Forbidden to automatically add s to the table name to become plural
 			// freezeTableName: true,
 
-			// 禁止自动创建字段 createAt、updateAt
+			// Forbidden to automatic creation of fields createAt, updateAt
 			// timestamps: false,
 
-			// 如果数据库使用了触发器，则要加上如下设置，否则 insert/create 时会提示如下错误：
-			// The target table xxx of the DML statement cannot have any enabled triggers
-			// if the statement contains an OUTPUT clause without INTO clause.
+			// If the database uses triggers, add the following settings,
+			// otherwise insert/create will prompt the following error:
+			// 		The target table xxx of the DML statement cannot have any enabled triggers
+			// 		if the statement contains an OUTPUT clause without INTO clause.
 			// hasTrigger: true
 		},
 	},
