@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hiowenluke/sequelize-raw-where.git"
+    "url": "git+https://github.com/hiowenluke/sequelize-raw-query.git"
   },
   "author": "hi.owen.luke@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hiowenluke/sequelize-raw-where/issues"
+    "url": "https://github.com/hiowenluke/sequelize-raw-query/issues"
   },
-  "homepage": "https://github.com/hiowenluke/sequelize-raw-where#readme",
+  "homepage": "https://github.com/hiowenluke/sequelize-raw-query#readme",
   "dependencies": {
     "kdo": "^1.5.7",
     "mysql2": "^1.6.5",
