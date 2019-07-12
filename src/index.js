@@ -1,10 +1,4 @@
 
-// Create a namespace in global to save data so that
-// the entire user project with multi-sequery uses the same them.
-if (!global.__sequelize_raw_query) {
-	global.__sequelize_raw_query = {config:undefined, sequelize: undefined, queryGenerator: undefined};
-}
-
 const config = require('./config');
 const exec = require('./exec');
 const queryGenerator = require('./queryGenerator');
@@ -12,6 +6,10 @@ const Sequelize = require('sequelize');
 
 const me = Object.assign(Object.create(queryGenerator), {
 	init(cfg) {
+
+		// Create a namespace in global to save data so that
+		// the entire user project with multi-sequery uses the same them.
+		global.__sequelize_raw_query = {config: undefined, sequelize: undefined, queryGenerator: undefined};
 
 		config.init(cfg);
 		exec.init();
