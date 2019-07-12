@@ -89,6 +89,17 @@ describe('For exec', async () => {
 		expect(result[0].id === 1).to.be.true;
 	});
 
+	it(`.do(sql, beforeExec) // return undefined`, async () => {
+		const sql = `select * from ${table} m`;
+
+		const beforeExec = () => {
+			return undefined;
+		};
+
+		const result = await sequery.do(sql, beforeExec);
+		expect(result.length === 3).to.be.true;
+	});
+
 	it(`.do(sql, {afterExec}) // result.push(5)`, async () => {
 		const sql = `select * from ${table} m where id > :id`;
 
