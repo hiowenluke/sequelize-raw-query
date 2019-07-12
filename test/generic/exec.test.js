@@ -103,7 +103,7 @@ describe('For exec', async () => {
 	it(`.do(sql, {afterExec}) // result.push(5)`, async () => {
 		const sql = `select * from ${table} m where id > :id`;
 
-		const afterExec = (result) => {
+		const afterExec = ({result}) => {
 			result.push(5);
 		};
 
@@ -114,7 +114,7 @@ describe('For exec', async () => {
 	it(`.do(sql, afterExec) // result.push(5)`, async () => {
 		const sql = `select * from ${table} m where id > :id`;
 
-		const afterExec = (result) => {
+		const afterExec = ({result}) => {
 			result.push(5);
 		};
 
@@ -122,10 +122,10 @@ describe('For exec', async () => {
 		expect(result.length === 2).to.be.true;
 	});
 
-	it(`.do(sql, afterExec) // result = []`, async () => {
+	it(`.do(sql, afterExec) // return result = []`, async () => {
 		const sql = `select * from ${table} m where id > :id`;
 
-		const afterExec = (result) => {
+		const afterExec = ({result}) => {
 			result = [];
 			return result;
 		};
