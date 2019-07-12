@@ -1,5 +1,7 @@
 
-const me = {
+// Save config to global
+global.__sequelize_raw_query.config = {
+
 	// database: 'test',
 	// username: 'sa',
 	// password: 'playboy',
@@ -42,4 +44,4 @@ const me = {
 	}
 };
 
-module.exports = me;
+module.exports = global.__sequelize_raw_query.config;
