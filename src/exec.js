@@ -313,8 +313,7 @@ const fetchData = {
 	afterExec({result, hooks}) {
 		if (!hooks || !hooks.afterExec) return;
 
-		// Wrap result as {result} to in line with beforeExec to avoid user mistakes
-		const newResult = hooks.afterExec({result});
+		const newResult = hooks.afterExec(result);
 
 		// If there is a new result, use it
 		newResult && this.setArgs({result: newResult});
