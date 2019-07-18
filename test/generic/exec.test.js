@@ -5,7 +5,7 @@ const config = require('../__config/default');
 
 describe('For exec', async () => {
 
-	const table = '(select 1 as id union select 2 union select 3)';
+	const table = `(select 1 as id, '2019-02-01' as date union select 2, '2019-03-10' union select 3, '2019-10-16')`;
 
 	it('init sequery', async () => {
 
