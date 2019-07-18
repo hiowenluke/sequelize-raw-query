@@ -51,6 +51,12 @@ describe('For exec', async () => {
 		expect(result.length === 2).to.be.true;
 	});
 
+	it(`.do(sql, templateData) // templateData = {idCondition: 'id > 1 and 1 > 0', dateCondition: "date >= '2019-03-10'"}`, async () => {
+		const sql = `select * from ${table} m where {idCondition} and {dateCondition}`;
+		const result = await sequery.do(sql, {idCondition: 'id > 1 and 1 > 0', dateCondition: "date >= '2019-03-10'"});
+		expect(result.length === 2).to.be.true;
+	});
+
 	it(`.do(sql, {replacements, templateData}) // replacements = {id: 2}, templateData = {condition: 'id > 1'}`, async () => {
 		const sql = `select * from ${table} m where {condition} and id > :id`;
 		const replacements = {id: 2};
