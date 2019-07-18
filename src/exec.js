@@ -43,7 +43,7 @@
 
 			The names of replacements and templateData can be omitted and the program
 			automatically recognizes them. For example, the following is equivalent:
-			(sql, {id: 1}) => (sql, {replacements: {id: 1}})
+			(sql, {id: 1}) <=> (sql, {replacements: {id: 1}})
 
 	---------------------------------------------------------------
 * */
@@ -160,8 +160,8 @@ const prepare = {
 
 		sql = sql.replace(/{([a-zA-Z0-9_]+)}/g, (match, capture) => {
 
-			// match	'{date}'
-			// capture	'date''
+			// match	'{dateCondition}'
+			// capture	'dateCondition''
 			return templateData[capture];
 		});
 
