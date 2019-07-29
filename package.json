@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/hiowenluke/sequelize-raw-query#readme",
   "dependencies": {
-    "kdo": "^1.6.0",
+    "kdo": "^1.6.1",
     "mysql2": "^1.6.5",
     "sequelize": "5.9.4",
     "tedious": "^6.2.0"
