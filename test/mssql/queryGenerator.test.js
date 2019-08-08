@@ -35,7 +35,7 @@ describe('MSSQL - queryGenerator', async () => {
 	});
 
 	it(`.getWhereConditions(where) // where = {id: {[Op.or]: {[Op.lt]: 1000, [Op.eq]: null}}}`, () => {
-		const Op = sequery.Op;
+		const Op = sequery.Sequelize.Op;
 		const where = {
 			id: {
 				[Op.or]: {
