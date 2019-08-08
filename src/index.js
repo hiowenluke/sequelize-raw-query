@@ -16,7 +16,7 @@ const me = Object.assign(Object.create(queryGenerator), {
 		queryGenerator.init();
 
 		// See ../test/mysql/queryGenerator.test.js for usage
-		this.Op = Sequelize.Op;
+		this.Sequelize = Sequelize;
 
 		return this;
 	},
