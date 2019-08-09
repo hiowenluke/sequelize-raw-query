@@ -33,6 +33,10 @@ const me = Object.assign(Object.create(queryGenerator), {
 		return config.get();
 	},
 
+	async exec(...args) {
+		return await this.do(...args);
+	},
+
 	async do(...args) {
 		return await exec.do(...args);
 	}
