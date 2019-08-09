@@ -21,6 +21,14 @@ const me = Object.assign(Object.create(queryGenerator), {
 		return this;
 	},
 
+	setConfig(cfg) {
+		config.set(cfg);
+	},
+
+	getConfig() {
+		return config.get();
+	},
+
 	async do(...args) {
 		return await exec.do(...args);
 	}
