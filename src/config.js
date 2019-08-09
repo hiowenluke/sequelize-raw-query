@@ -38,10 +38,20 @@ const me = {
 		},
 	},
 
-	init(config) {
+	init(...args) {
+		this.set(...args);
+	},
+
+	set(cfg) {
+		const config = Object.assign(this, cfg);
+
 		// Save config to global
 		global.__sequelize_raw_query.config = config;
-	}
+	},
+
+	get() {
+		return global.__sequelize_raw_query.config;
+	},
 };
 
 module.exports = me;
