@@ -25,14 +25,6 @@ const me = Object.assign(Object.create(queryGenerator), {
 		return this;
 	},
 
-	setConfig(cfg) {
-		config.set(cfg);
-	},
-
-	getConfig() {
-		return config.get();
-	},
-
 	async exec(...args) {
 		return await this.do(...args);
 	},
@@ -42,4 +34,5 @@ const me = Object.assign(Object.create(queryGenerator), {
 	}
 });
 
+me.config = config;
 module.exports = me;
