@@ -11,7 +11,7 @@ describe('For exec', async () => {
 	it('init sequery', async () => {
 
 		// We can use any of the configurations of mssql and mysql for this test cases file.
-		sequery.init(config.use('mssql'));
+		sequery.init(config.use('mysql'));
 	});
 
 	it(`.do(sql)`, async () => {
