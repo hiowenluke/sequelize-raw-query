@@ -41,34 +41,32 @@ const convert$toOp = (where) => {
 	return where;
 };
 
-const getOrderStr = (order, tableName) => {
+const getFieldNamesStr = (fieldNames, tableName) => {
 	const dialect = global.__sequelize_raw_query.config.dialect;
-	let orderStr = '';
+	let fieldNamesStr = '';
 
-	// If order is a string, use it
-	if (typeof order === 'string') { // 'type, name desc'
-		orderStr = order;
+	if (typeof fieldNames === 'string') { // 'type, name desc'
+		fieldNamesStr = fieldNames;
 	}
 
-	// If order is an array, convert to a string
-	if (Array.isArray(order)) {
+	if (Array.isArray(fieldNames)) {
 
 		// Convert a one-dimensional array to a string:
 		// ['type', 'name'] => 'type, name'
-		if (typeof order[0] === 'string') {
-			orderStr = order.join(', '); //
+		if (typeof fieldNames[0] === 'string') {
+			fieldNamesStr = fieldNames.join(', '); //
 		}
 
 		// Convert a two-dimensional array to a string:
 		// [['type'], ['name', 'desc']] => 'type, name desc'
-		if (Array.isArray(order[0])) {
-			orderStr = order.map(item => item.join(' ')).join(', ');
+		if (Array.isArray(fieldNames[0])) {
+			fieldNamesStr = fieldNames.map(item => item.join(' ')).join(', ');
 		}
 	}
 
 	// type, name desc => `type`, `name` desc
 	if (dialect === 'mysql') {
-		orderStr = orderStr.replace(/\w+/g, (match) => {
+		fieldNamesStr = fieldNamesStr.replace(/\w+/g, (match) => {
 			const word = match.toLowerCase();
 			return word === 'desc' || word === 'asc' ? word : '`' + match + '`';
 		});
@@ -76,12 +74,12 @@ const getOrderStr = (order, tableName) => {
 
 	if (tableName) { // fullname or prefix such as "[m]." (mssql) or "`m`." (mysql)
 		const prefix = dialect === 'mssql' ? '[' + tableName + '].' : '`' + tableName + '`.';
-		orderStr = orderStr.replace(/^|(,\s*)/g, (match) => {
+		fieldNamesStr = fieldNamesStr.replace(/^|(,\s*)/g, (match) => {
 			return match !== '' ? ', ' + prefix : prefix;
 		})
 	}
 
-	return orderStr ? ' order by ' + orderStr : '';
+	return fieldNamesStr;
 };
 
 const me = {
@@ -119,12 +117,18 @@ const me = {
 		return global.__sequelize_raw_query.queryGenerator.getWhereConditions(where, tableName);
 	},
 
+	getGroupClause(group, tableName) {
+		const fieldNamesStr = getFieldNamesStr(group, tableName);
+		return fieldNamesStr ? ' group by ' + fieldNamesStr : '';
+	},
+
 	getOrderClause(order, tableName) {
 
 		// options.order usage:
 		// http://docs.sequelizejs.com/manual/querying.html#ordering
 
-		return getOrderStr(order, tableName);
+		const fieldNamesStr = getFieldNamesStr(order, tableName);
+		return fieldNamesStr ? ' order by ' + fieldNamesStr : '';
 	},
 
 	getLimitClause(options, tableName) {
