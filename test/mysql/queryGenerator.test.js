@@ -80,6 +80,12 @@ describe('MySQL - queryGenerator', async () => {
 		expect(orderStr === ' order by `m`.`type`, `m`.`name` desc').to.be.true;
 	});
 
+	it(`.getGroupClause(group) // group = 'id'`, () => {
+		const group = 'id';
+		const groupStr = sequery.getGroupClause(group);
+		expect(groupStr === ' group by `id`').to.be.true;
+	});
+
 	it(`.getLimitClause(options) // options = {order: 'id', limit: 10, offset: 5}`, () => {
 		const options = {order: 'id', limit: 10, offset: 5};
 		const limitStr = sequery.getLimitClause(options);
