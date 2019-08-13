@@ -336,7 +336,7 @@ const me = {
 	},
 
 	async do(...args) {
-		const options = kdo.sync.do(prepare, {args});
+		const options = kdo.doSync(prepare, {args});
 		const result = await kdo.do(fetchData, options);
 		return result;
 	}
