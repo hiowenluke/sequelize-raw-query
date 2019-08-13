@@ -19,9 +19,6 @@ const me = Object.assign(Object.create(queryGenerator), {
 		exec.init();
 		queryGenerator.init();
 
-		// See ../test/mysql/queryGenerator.test.js for usage
-		this.Sequelize = Sequelize;
-
 		return this;
 	},
 
@@ -35,4 +32,8 @@ const me = Object.assign(Object.create(queryGenerator), {
 });
 
 me.config = config;
+
+// See ../test/mysql/queryGenerator.test.js for usage
+me.Sequelize = Sequelize;
+
 module.exports = me;
