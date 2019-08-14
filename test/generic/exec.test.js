@@ -26,6 +26,12 @@ describe('For exec', async () => {
 		expect(result[0].id === 1).to.be.true;
 	});
 
+	it(`.do(sql, undefined)`, async () => {
+		const sql = `select * from ${table} m`;
+		const result = await sequery.do(sql, undefined);
+		expect(result[0].id === 1).to.be.true;
+	});
+
 	it(`.do(sql, {replacements}) // replacements = {id: 2}`, async () => {
 		const sql = `select * from ${table} m where id = :id`;
 		const replacements = {id: 2};
