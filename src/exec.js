@@ -74,18 +74,21 @@ const prepare = {
 		if (args.length === 1) {
 			const arg = args[0];
 
-			// If arg is a function, wrap it as a hooks object
-			if (typeof arg === 'function') {
-				hooks = {};
-				hooks[arg.name] = arg;
-			}
+			if (arg) {
 
-			// If the first property of arg is function, then it is hooks
-			else if (typeof arg[Object.keys(arg)[0]] === 'function') {
-				hooks = arg;
-			}
-			else {
-				fieldValues = arg;
+				// If arg is a function, wrap it as a hooks object
+				if (typeof arg === 'function') {
+					hooks = {};
+					hooks[arg.name] = arg;
+				}
+
+				// If the first property of arg is function, then it is hooks
+				else if (typeof arg[Object.keys(arg)[0]] === 'function') {
+					hooks = arg;
+				}
+				else {
+					fieldValues = arg;
+				}
 			}
 		}
 
