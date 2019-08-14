@@ -41,7 +41,7 @@ const convert$toOp = (where) => {
 	return where;
 };
 
-const getFieldNamesStr = (fieldNames, tableName) => {
+const getOrderFieldNamesStr = (fieldNames) => {
 	const dialect = global.__sequelize_raw_query.config.dialect;
 	let fieldNamesStr = '';
 
@@ -57,12 +57,20 @@ const getFieldNamesStr = (fieldNames, tableName) => {
 			fieldNamesStr = fieldNames.join(', '); //
 		}
 
+		else
+
 		// Convert a two-dimensional array to a string:
 		// [['type'], ['name', 'desc']] => 'type, name desc'
 		if (Array.isArray(fieldNames[0])) {
 			fieldNamesStr = fieldNames.map(item => item.join(' ')).join(', ');
 		}
 	}
+
+	return fieldNamesStr;
+};
+
+const convertFieldNames = (fieldNamesStr) => {
+	const dialect = global.__sequelize_raw_query.config.dialect;
 
 	// type, name desc => `type`, `name` desc
 	if (dialect === 'mysql') {
@@ -72,12 +80,19 @@ const getFieldNamesStr = (fieldNames, tableName) => {
 		});
 	}
 
-	if (tableName) { // fullname or prefix such as "[m]." (mssql) or "`m`." (mysql)
-		const prefix = dialect === 'mssql' ? '[' + tableName + '].' : '`' + tableName + '`.';
-		fieldNamesStr = fieldNamesStr.replace(/^|(,\s*)/g, (match) => {
-			return match !== '' ? ', ' + prefix : prefix;
-		})
-	}
+	return fieldNamesStr;
+};
+
+const replaceWithTableName = (fieldNamesStr, tableName) => {
+	if (!tableName) return fieldNamesStr;
+
+	const dialect = global.__sequelize_raw_query.config.dialect;
+
+	// fullname or prefix such as "[m]." (mssql) or "`m`." (mysql)
+	const prefix = dialect === 'mssql' ? '[' + tableName + '].' : '`' + tableName + '`.';
+	fieldNamesStr = fieldNamesStr.replace(/^|(,\s*)/g, (match) => {
+		return match !== '' ? ', ' + prefix : prefix;
+	});
 
 	return fieldNamesStr;
 };
@@ -118,7 +133,13 @@ const me = {
 	},
 
 	getGroupClause(group, tableName) {
-		const fieldNamesStr = getFieldNamesStr(group, tableName);
+		let fieldNamesStr = group;
+		fieldNamesStr = convertFieldNames(fieldNamesStr);
+
+		if (tableName) {
+			fieldNamesStr = replaceWithTableName(fieldNamesStr, tableName);
+		}
+
 		return fieldNamesStr ? ' group by ' + fieldNamesStr : '';
 	},
 
@@ -127,7 +148,13 @@ const me = {
 		// options.order usage:
 		// http://docs.sequelizejs.com/manual/querying.html#ordering
 
-		const fieldNamesStr = getFieldNamesStr(order, tableName);
+		let fieldNamesStr = getOrderFieldNamesStr(order);
+		fieldNamesStr = convertFieldNames(fieldNamesStr);
+
+		if (tableName) {
+			fieldNamesStr = replaceWithTableName(fieldNamesStr, tableName);
+		}
+
 		return fieldNamesStr ? ' order by ' + fieldNamesStr : '';
 	},
 
