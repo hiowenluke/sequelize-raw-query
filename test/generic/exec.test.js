@@ -14,13 +14,13 @@ describe('For exec', async () => {
 		sequery.init(config.use('mysql'));
 	});
 
-	it(`.do(sql)`, async () => {
+	it(`.exec(sql) // .exec() is an alias of .do()`, async () => {
 		const sql = `select * from ${table} m`;
 		const result = await sequery.do(sql);
 		expect(result[0].id === 1).to.be.true;
 	});
 
-	it(`.exec(sql) // .exec(...) is as same as .do(...)`, async () => {
+	it(`.do(sql)`, async () => {
 		const sql = `select * from ${table} m`;
 		const result = await sequery.do(sql);
 		expect(result[0].id === 1).to.be.true;
