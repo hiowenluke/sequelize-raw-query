@@ -315,9 +315,10 @@ const fetchData = {
 	},
 
 	afterExec({result, hooks}) {
-		if (!hooks || !hooks.afterExec) return;
+		const afterExec = hooks && hooks.afterExec || config.getConfig().afterExec;
+		if (!afterExec) return;
 
-		const newResult = hooks.afterExec(result);
+		const newResult = afterExec(result);
 
 		// If there is a new result, use it
 		newResult && this.setArgs({result: newResult});

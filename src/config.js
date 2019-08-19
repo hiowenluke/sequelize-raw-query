@@ -11,6 +11,7 @@ const me = {
 	enableGlobal:false,
 
 	beforeExec: null,
+	afterExec: null,
 
 	// Configuration
 	data: {
