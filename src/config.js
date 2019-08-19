@@ -10,8 +10,11 @@ const me = {
 	// If it is true, save the data to global.__sequelize_raw_query
 	enableGlobal:false,
 
-	beforeExec: null,
-	afterExec: null,
+	// For all executing
+	hooks: {
+		beforeExec: null,
+		afterExec: null,
+	},
 
 	// Configuration
 	data: {
@@ -107,6 +110,10 @@ const me = {
 
 	setSequelize(sequelize) {
 		this.__getConfigData().sequelize = sequelize;
+	},
+
+	getHooks() {
+		return this.__getConfigData().config.hooks;
 	}
 };
 
