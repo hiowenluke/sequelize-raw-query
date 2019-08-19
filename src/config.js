@@ -11,10 +11,8 @@ const me = {
 	enableGlobal:false,
 
 	// For all executing
-	hooks: {
-		beforeExec: null,
-		afterExec: null,
-	},
+	beforeExec: null,
+	afterExec: null,
 
 	// Configuration
 	data: {
@@ -57,6 +55,11 @@ const me = {
 	},
 
 	init(cfg) {
+
+		// Reset them every time
+		this.enableGlobal = false;
+		this.beforeExec = null;
+		this.afterExec = null;
 
 		// If the user project includes multiple subprojects, it is needed to enable global mode.
 		// Otherwise, since the sequelize in each subproject is a different instance
@@ -110,10 +113,6 @@ const me = {
 
 	setSequelize(sequelize) {
 		this.__getConfigData().sequelize = sequelize;
-	},
-
-	getHooks() {
-		return this.__getConfigData().config.hooks;
 	}
 };
 
