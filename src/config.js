@@ -1,9 +1,21 @@
 
+const myGlobalName = '__sequelize_raw_query';
+
 const me = {
 
 	// database: 'test',
 	// username: 'sa',
 	// password: 'playboy',
+
+	// If it is true, save the data to global.__sequelize_raw_query
+	enableGlobal:false,
+
+	// Configuration
+	data: {
+		config: undefined,
+		sequelize: undefined,
+		queryGenerator: undefined,
+	},
 
 	// For new Sequelize()
 	options: {
@@ -38,20 +50,61 @@ const me = {
 		},
 	},
 
-	init(...args) {
-		this.set(...args);
+	init(cfg) {
+
+		// If the user project includes multiple subprojects, it is needed to enable global mode.
+		// Otherwise, since the sequelize in each subproject is a different instance
+		// and cannot share the same data, it will cause an error.
+		if (cfg.enableGlobal) {
+
+			// Create a namespace in global to save data so that
+			// the entire user project with multi-sequery uses the same data.
+			global[myGlobalName] = {
+				config: undefined,
+				sequelize: undefined,
+				queryGenerator: undefined
+			};
+		}
+
+		this.set(cfg);
+	},
+
+	__getConfigData() {
+		return this.enableGlobal ? global[myGlobalName] : this.data;
 	},
 
 	set(cfg) {
 		const config = Object.assign(this, cfg);
-
-		// Save config to global
-		global.__sequelize_raw_query.config = config;
+		this.__getConfigData().config = config;
 	},
 
 	get() {
-		return global.__sequelize_raw_query.config;
+		return this.__getConfigData().config;
 	},
+
+	getConfig() {
+		return this.__getConfigData().config;
+	},
+
+	setConfig(config) {
+		this.__getConfigData().config = config;
+	},
+
+	getQueryGenerator() {
+		return this.__getConfigData().queryGenerator;
+	},
+
+	setQueryGenerator(queryGenerator) {
+		this.__getConfigData().queryGenerator = queryGenerator;
+	},
+
+	getSequelize() {
+		return this.__getConfigData().sequelize;
+	},
+
+	setSequelize(sequelize) {
+		this.__getConfigData().sequelize = sequelize;
+	}
 };
 
 module.exports = me;

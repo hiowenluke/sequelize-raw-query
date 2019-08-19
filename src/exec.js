@@ -50,6 +50,7 @@
 
 const kdo = require('kdo');
 const Sequelize = require('sequelize');
+const config = require('./config');
 
 const prepare = {
 
@@ -291,7 +292,7 @@ const fetchData = {
 			seqOptions.type = Sequelize.QueryTypes[commandType.toUpperCase()];
 		}
 
-		let result = await global.__sequelize_raw_query.sequelize.query(sql, seqOptions);
+		let result = await config.getSequelize().query(sql, seqOptions);
 
 		// If it is delete, the result is null, then return null
 		if (!result) return null;
@@ -329,13 +330,12 @@ const fetchData = {
 
 const me = {
 	init() {
-		const config = global.__sequelize_raw_query.config;
-		const {database, username, password} = config;
-		const options = config;
+		const cfg = config.getConfig();
+		const {database, username, password} = cfg;
+		const options = cfg;
 		const sequelize = new Sequelize(database, username, password, options);
 
-		// Save sequelize to global
-		global.__sequelize_raw_query.sequelize = sequelize;
+		config.setSequelize(sequelize);
 	},
 
 	async do(...args) {

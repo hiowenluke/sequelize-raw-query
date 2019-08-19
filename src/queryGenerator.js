@@ -2,6 +2,8 @@
 const Sequelize = require('sequelize');
 const path = require('path');
 
+const config = require('./config');
+
 // The absolute path of this file:
 // ./node_modules/sequelize-raw-query/src/queryGenerator.js
 const root = path.resolve(module.filename, '../../../');
@@ -42,7 +44,6 @@ const convert$toOp = (where) => {
 };
 
 const getOrderFieldNamesStr = (fieldNames) => {
-	const dialect = global.__sequelize_raw_query.config.dialect;
 	let fieldNamesStr = '';
 
 	if (typeof fieldNames === 'string') { // 'type, name desc'
@@ -70,7 +71,7 @@ const getOrderFieldNamesStr = (fieldNames) => {
 };
 
 const convertFieldNames = (fieldNamesStr) => {
-	const dialect = global.__sequelize_raw_query.config.dialect;
+	const dialect = config.getConfig().dialect;
 
 	// type, name desc => `type`, `name` desc
 	if (dialect === 'mysql') {
@@ -86,7 +87,7 @@ const convertFieldNames = (fieldNamesStr) => {
 const replaceWithTableName = (fieldNamesStr, tableName) => {
 	if (!tableName) return fieldNamesStr;
 
-	const dialect = global.__sequelize_raw_query.config.dialect;
+	const dialect = config.getConfig().dialect;
 
 	// fullname or prefix such as "[m]." (mssql) or "`m`." (mysql)
 	const prefix = dialect === 'mssql' ? '[' + tableName + '].' : '`' + tableName + '`.';
@@ -99,8 +100,7 @@ const replaceWithTableName = (fieldNamesStr, tableName) => {
 
 const me = {
 	init() {
-		const config = global.__sequelize_raw_query.config;
-		const dialect = config.dialect;
+		const dialect = config.getConfig().dialect;
 		const QueryGenerator = dialect === 'mssql' ? MSSQLQueryGenerator : AbstractQueryGenerator;
 		const queryGenerator = new QueryGenerator({sequelize: Sequelize, _dialect: dialect});
 
@@ -108,8 +108,7 @@ const me = {
 		queryGenerator.dialect = dialect;
 		queryGenerator.sequelize = {options: {}};
 
-		// Save queryGenerator to global
-		global.__sequelize_raw_query.queryGenerator = queryGenerator;
+		config.setQueryGenerator(queryGenerator);
 	},
 
 	getWhereConditions(where, tableName) {
@@ -129,7 +128,7 @@ const me = {
 			where = convert$toOp(where);
 		}
 
-		return global.__sequelize_raw_query.queryGenerator.getWhereConditions(where, tableName);
+		return config.getQueryGenerator().getWhereConditions(where, tableName);
 	},
 
 	getGroupClause(group, tableName) {
@@ -171,7 +170,7 @@ const me = {
 
 		// Set options.order to an empty array to avoid errors for sequelize
 		options.order = [];
-		const limitStr = global.__sequelize_raw_query.queryGenerator.addLimitAndOffset(options);
+		const limitStr = config.getQueryGenerator().addLimitAndOffset(options);
 
 		return orderStr + limitStr.toLowerCase();
 	}
