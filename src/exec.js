@@ -264,7 +264,7 @@ const prepare = {
 	},
 
 	beforeExec({sql, replacements, hooks}) {
-		const beforeExec = hooks && hooks.beforeExec || config.getConfig().beforeExec;
+		const beforeExec = hooks && hooks.beforeExec || config.getHooks().beforeExec;
 		if (!beforeExec) return;
 
 		const newArgs = beforeExec({sql, replacements});
@@ -315,7 +315,7 @@ const fetchData = {
 	},
 
 	afterExec({result, hooks}) {
-		const afterExec = hooks && hooks.afterExec || config.getConfig().afterExec;
+		const afterExec = hooks && hooks.afterExec || config.getHooks().afterExec;
 		if (!afterExec) return;
 
 		const newResult = afterExec(result);
