@@ -10,6 +10,8 @@ const me = {
 	// If it is true, save the data to global.__sequelize_raw_query
 	enableGlobal:false,
 
+	beforeExec: null,
+
 	// Configuration
 	data: {
 		config: undefined,

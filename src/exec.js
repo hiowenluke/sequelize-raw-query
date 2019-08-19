@@ -264,14 +264,14 @@ const prepare = {
 	},
 
 	beforeExec({sql, replacements, hooks}) {
-		if (hooks && hooks.beforeExec) {
-			const newArgs = hooks.beforeExec({sql, replacements});
+		const beforeExec = hooks && hooks.beforeExec || config.getConfig().beforeExec;
+		if (!beforeExec) return;
 
-			if (newArgs && typeof newArgs === 'object') {
-				const {sql, replacements} = newArgs;
-				sql && this.setArgs({sql});
-				replacements && this.setArgs({replacements});
-			}
+		const newArgs = beforeExec({sql, replacements});
+		if (newArgs && typeof newArgs === 'object') {
+			const {sql, replacements} = newArgs;
+			sql && this.setArgs({sql});
+			replacements && this.setArgs({replacements});
 		}
 	},
 
