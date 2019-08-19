@@ -263,14 +263,14 @@ const prepare = {
 	},
 
 	beforeExec({sql, replacements, hooks}) {
-		if (!hooks || !hooks.beforeExec) return;
+		if (hooks && hooks.beforeExec) {
+			const newArgs = hooks.beforeExec({sql, replacements});
 
-		const newArgs = hooks.beforeExec({sql, replacements});
-
-		if (newArgs && typeof newArgs === 'object') {
-			const {sql, replacements} = newArgs;
-			sql && this.setArgs({sql});
-			replacements && this.setArgs({replacements});
+			if (newArgs && typeof newArgs === 'object') {
+				const {sql, replacements} = newArgs;
+				sql && this.setArgs({sql});
+				replacements && this.setArgs({replacements});
+			}
 		}
 	},
 
