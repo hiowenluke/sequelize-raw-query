@@ -152,4 +152,35 @@ describe('For exec', async () => {
 		const result = await sequery.do(sql, {id: 2}, afterExec);
 		expect(result.length === 0).to.be.true;
 	});
+
+	it(`.do(sql, afterExec) // return result = []`, async () => {
+		const sql = `select * from ${table} m where id > :id`;
+
+		const afterExec = (result) => {
+			result = [];
+			return result;
+		};
+
+		const result = await sequery.do(sql, {id: 2}, afterExec);
+		expect(result.length === 0).to.be.true;
+	});
+
+	it(`.do(sql) // delimiter $$`, async () => {
+		const sql = `
+			delimiter $$
+			drop function if exists fn_sequelize_raw_query $$
+			create function fn_sequelize_raw_query(i int) returns int deterministic
+			begin
+				declare i_return int;
+				set i_return = i + 1;
+				return i_return;
+			end;
+			$$
+			delimiter ;
+			select fn_sequelize_raw_query(1) as result;
+		`;
+
+		const result = await sequery.do(sql);
+		expect(result[0].result === 2).to.be.true;
+	});
 });
