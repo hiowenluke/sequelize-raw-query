@@ -275,14 +275,39 @@ const prepare = {
 		}
 	},
 
+	convertSqlToArray({sql}) {
+		const dialect = config.getConfig().dialect;
+		if (dialect === 'mysql') {
+			const delimiterReg = /\bdelimiter\b\s*(\S+?)\s/i; // "delimiter $$", "delimiter //"
+			const temp = sql.match(delimiterReg);
+
+			if (temp) {
+				const delimiterChar = temp[1];
+				if (delimiterChar) {
+					sql = sql
+						.replace(delimiterReg, '')
+						.replace(/\bdelimiter\b\s*?;/, '') // "delimiter ;"
+					;
+					sql = sql.split(delimiterChar);
+				}
+			}
+		}
+
+		if (typeof sql === 'string') {
+			sql = [sql];
+		}
+
+		this.setArgs({sqlArr: sql});
+	},
+
 	return() {
-		const {sql, commandType, replacements, hooks} = this.args;
-		return {sql, commandType, replacements, hooks};
+		const {sqlArr, commandType, replacements, hooks} = this.args;
+		return {sqlArr, commandType, replacements, hooks};
 	}
 };
 
 const fetchData = {
-	async execSql({sql, commandType, replacements}) {
+	async execSql({sqlArr, commandType, replacements}) {
 
 		// Use the "raw" parameter to indicate the execution of the raw query
 		const seqOptions = {replacements, raw: true};
@@ -292,7 +317,13 @@ const fetchData = {
 			seqOptions.type = Sequelize.QueryTypes[commandType.toUpperCase()];
 		}
 
-		let result = await config.getSequelize().query(sql, seqOptions);
+		const sequelize = config.getSequelize();
+		let result;
+
+		for (let i = 0; i < sqlArr.length; i ++) {
+			const sql = sqlArr[i];
+			result = await sequelize.query(sql, seqOptions);
+		}
 
 		// If it is delete, the result is null, then return null
 		if (!result) return null;
