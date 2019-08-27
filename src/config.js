@@ -1,18 +1,22 @@
 
 const myGlobalName = '__sequelize_raw_query';
 
-const me = {
+const defaultValues = {
 
 	// database: 'test',
 	// username: 'sa',
 	// password: 'playboy',
 
 	// If it is true, save the data to global.__sequelize_raw_query
-	enableGlobal:false,
+	enableGlobal: false,
 
 	// For all executing
 	beforeExec: null,
 	afterExec: null,
+
+};
+
+const me = {
 
 	// Configuration
 	data: {
@@ -55,11 +59,7 @@ const me = {
 	},
 
 	init(cfg) {
-
-		// Reset them every time
-		this.enableGlobal = false;
-		this.beforeExec = null;
-		this.afterExec = null;
+		this.reset();
 
 		// If the user project includes multiple subprojects, it is needed to enable global mode.
 		// Otherwise, since the sequelize in each subproject is a different instance
@@ -76,6 +76,10 @@ const me = {
 		}
 
 		this.set(cfg);
+	},
+
+	reset() {
+		Object.assign(this, defaultValues);
 	},
 
 	__getConfigData() {
