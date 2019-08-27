@@ -14,6 +14,11 @@ const defaultValues = {
 	beforeExec: null,
 	afterExec: null,
 
+	// If it is true, simplify the result:
+	//		If the result array has only one object element:
+	//			If the object element has only one property, return the value of the property.
+	//			Otherwise, return the whole object.
+	isSimplifyResult: false,
 };
 
 const me = {
