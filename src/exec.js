@@ -286,7 +286,7 @@ const prepare = {
 				if (delimiterChar) {
 					sql = sql
 						.replace(delimiterReg, '')
-						.replace(/\bdelimiter\b\s*?;/, '') // "delimiter ;"
+						.replace(/\bdelimiter\b\s*?;/i, '') // "delimiter ;"
 					;
 					sql = sql.split(delimiterChar);
 				}
