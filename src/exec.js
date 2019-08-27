@@ -355,6 +355,22 @@ const fetchData = {
 		newResult && this.setArgs({result: newResult});
 	},
 
+	simplifyTheResultIfNeeded({result}) {
+		if (!config.getConfig().isSimplifyResult) return;
+		if (!result || result.length !== 1) return;
+
+		const row = result[0];
+		const fields = Object.keys(row);
+		if (fields.length === 1) {
+			result = row[fields[0]];
+		}
+		else {
+			result = row;
+		}
+
+		this.setArgs({result});
+	},
+
 	return({result}) {
 		return result;
 	}
