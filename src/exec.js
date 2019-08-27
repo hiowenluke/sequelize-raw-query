@@ -322,6 +322,7 @@ const fetchData = {
 
 		for (let i = 0; i < sqlArr.length; i ++) {
 			const sql = sqlArr[i];
+			if (sql.replace(/(^\s+)|(\s+$)/g, '') === '') continue;
 			result = await sequelize.query(sql, seqOptions);
 		}
 
