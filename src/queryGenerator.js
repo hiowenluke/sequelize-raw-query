@@ -12,8 +12,6 @@ const root = path.resolve(module.filename, '../../../');
 const AbstractQueryGenerator = require(root + '/sequelize/lib/dialects/abstract/query-generator');
 const MSSQLQueryGenerator = require(root + '/sequelize/lib/dialects/mssql/query-generator');
 
-const Op = Sequelize.Op;
-
 const isHasSymbol = (where) => {
 	if (Object.getOwnPropertySymbols(where).length) {
 		return true;
@@ -38,6 +36,7 @@ const convert$toOp = (where) => {
 	});
 
 	// Simplify logic with eval
+	const Op = Sequelize.Op;
 	eval("where = " + str);
 
 	return where;
