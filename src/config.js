@@ -7,7 +7,10 @@ const defaultValues = {
 	// username: 'sa',
 	// password: 'playboy',
 
-	// If it is true, save the data to global.__sequelize_raw_query
+	// If it is true, save the data to global.__sequelize_raw_query.
+	// 		If the user project includes multiple subprojects, it is needed to enable global mode.
+	// 		Otherwise, since the sequelize in each subproject is a different instance
+	// 		and cannot share the same data, it will cause an error.
 	enableGlobal: false,
 
 	// For all executing
@@ -66,13 +69,9 @@ const me = {
 	init(cfg) {
 		this.reset();
 
-		// If the user project includes multiple subprojects, it is needed to enable global mode.
-		// Otherwise, since the sequelize in each subproject is a different instance
-		// and cannot share the same data, it will cause an error.
 		if (cfg.enableGlobal) {
 
-			// Create a namespace in global to save data so that
-			// the entire user project with multi-sequery uses the same data.
+			// Create a namespace in global to save data
 			global[myGlobalName] = {
 				config: undefined,
 				sequelize: undefined,
