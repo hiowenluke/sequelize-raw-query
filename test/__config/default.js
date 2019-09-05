@@ -21,10 +21,6 @@ const def = {
 };
 
 const me = {
-
-	// Disable sequelize log in test
-	logging: false,
-
 	use(type) {
 		const config = Object.assign({}, this, def[type]);
 		return config;

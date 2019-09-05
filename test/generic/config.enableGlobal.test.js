@@ -11,7 +11,6 @@ describe('For config.enableGlobal', async () => {
 	it('init sequery', async () => {
 		const cfg = config.use('mysql');
 		cfg.enableGlobal = true;
-
 		sequery.init(cfg);
 	});
 
