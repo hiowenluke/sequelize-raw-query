@@ -1,6 +1,24 @@
 
 const myGlobalName = '__sequelize_raw_query';
 
+const isTest = () => {
+	let parent = module;
+	let isTest;
+
+	// If the module's ancestor's filename contains /mocha/, then it is test.
+	while (true) {
+		if (/(\/mocha\/)/.test(parent.filename)) {
+			isTest = true;
+			break;
+		}
+
+		parent = parent.parent;
+		if (!parent) break;
+	}
+
+	return isTest;
+};
+
 const defaultValues = {
 
 	// database: 'test',
@@ -92,6 +110,12 @@ const me = {
 
 	set(cfg) {
 		const config = Object.assign(this, cfg);
+
+		// Disable Sequelize logs in testing
+		if (isTest()) {
+			config.logging = false;
+		}
+
 		this.__getConfigData().config = config;
 	},
 
