@@ -3,7 +3,7 @@ const sequery = require('../../src');
 const expect = require('chai').expect;
 const config = require('../__config/default');
 
-describe('For config.hooks', async () => {
+describe('For config hooks', async () => {
 
 	// The string in the sql statement of mssql must be a single quote
 	const table = `(select 1 as id, '2019-02-01' as date union select 2, '2019-03-10' union select 3, '2019-10-16')`;
