@@ -1,7 +1,7 @@
 {
   "name": "sequelize-raw-query",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sequelize-raw-query executes raw sql statements, supports where, order, group and limit objects in sequelize (sequelize.query() does not). Sequelize-raw-query provides templateData which is more friendly than replacements.",
   "main": "index.js",
   "scripts": {
     "test": "mocha --exit"
@@ -12,6 +12,11 @@
   },
   "author": "hi.owen.luke@gmail.com",
   "license": "MIT",
+  "keywords": [
+    "sequelize",
+    "raw query",
+    "sql statements"
+  ],
   "bugs": {
     "url": "https://github.com/hiowenluke/sequelize-raw-query/issues"
   },
