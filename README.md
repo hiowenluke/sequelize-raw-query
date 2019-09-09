@@ -7,7 +7,6 @@ Sequelize-raw-query executes raw sql statements, supports where, order and limit
 * Replacements	
 The parameter form ":xxx" is used to specify the field value, for example "id = :id".
 
-
 * TemplateData
 The parameter form "{xxx}" is used to construct sql statements such as "where id > {id} and {dateCondition}".
 
