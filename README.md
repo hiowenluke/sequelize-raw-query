@@ -1,9 +1,7 @@
 
 # Sequelize raw query
 
-Sequelize-raw-query executes native sql statements, supports where, order, group, limit objects in sequelize (sequelize.query() does not).
-
-Sequelize-raw-query provides templateData which is more friendly than replacements. The difference is: 
+Sequelize-raw-query executes raw sql statements, supports where, order, group and limit objects in sequelize (sequelize.query() does not). Sequelize-raw-query provides templateData which is more friendly than replacements, the difference is: 
 
 ```
 * Replacements	
