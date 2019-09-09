@@ -54,7 +54,7 @@ const config = {
 sequery.init(config);
 ```
 
-Simulate a table for demo:
+Simulate a table for demo (you don't need to do this in your project):
 ```js
 const table = `(
     select 1 as id, '2019-02-01' as date 
