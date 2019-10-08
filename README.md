@@ -14,7 +14,7 @@ TemplateData contains the functionality of replacements.
 This is to avoid using both the replacements and templateData.
 ```
 
-Sequery supports mssql and mysql.
+Sequery supports mssql and mysql. Sequery depends on sequelize 5.x.
 
 
 
