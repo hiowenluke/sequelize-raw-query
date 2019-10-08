@@ -105,7 +105,13 @@ const me = {
 	},
 
 	__getConfigData() {
-		return this.enableGlobal ? global[myGlobalName] : this.data;
+		const data = this.enableGlobal ? global[myGlobalName] : this.data;
+
+		if (!data) {
+			throw new Error('Please init sequelize-raw-query first');
+		}
+
+		return data;
 	},
 
 	set(cfg) {
