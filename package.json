@@ -24,7 +24,7 @@
   "dependencies": {
     "kdo": "^1.7.3",
     "mysql2": "^1.6.5",
-    "sequelize": "5.9.4",
+    "sequelize": "5.15.1",
     "tedious": "^6.2.0"
   },
   "devDependencies": {
