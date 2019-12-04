@@ -18,12 +18,14 @@ Sequery supports mssql and mysql. Sequery depends on sequelize 5.x.
 
 ## Installation
 
-Install:
 ```sh
 npm i sequelize-raw-query --save
 ```
 
-Test:
+## Test
+
+The below usages are come from test cases, run test first to learn more.
+
 ```sh
 git clone https://github.com/hiowenluke/sequelize-raw-query
 cd sequelize-raw-query
@@ -50,7 +52,7 @@ const config = {
 sequery.init(config);
 ```
 
-Simulate a table for demo (you don't need to do this in your project):
+Then simulate a table for demo (you don't need to do this in your project):
 ```js
 const table = `(
     select 1 as id, '2019-02-01' as date 
@@ -61,287 +63,317 @@ const table = `(
 )`;
 ````
 
-Then do sequery.xxx() like below (all of usages are come from test cases, run test above to learn more).
+Then try the below usages.
 
-### .exec() // or .do(), the alias of .exec
+### .exec() or .do(), the alias of .exec  [demo](./test/generic/exec.test.js)
 
-.exec(sql) or .do(sql)
 ```js
-const sql = `select * from ${table} m`;
-const result = await sequery.exec(sql);
-result[0].id // 1
+async function () {
+    const sql = `select * from ${table} m`;
+    const result = await sequery.exec(sql);
+    console.log(result[0].id ) // 1
+}
 ```
 
-.exec(sql, {replacements}) // replacements = {id: 2}
 ```js
-const sql = `select * from ${table} m where id = :id`;
-const replacements = {id: 2};
-const result = await sequery.exec(sql, {replacements});
-result[0].id // 2
+async function () {
+    const sql = `select * from ${table} m where id = :id`;
+    const replacements = {id: 2};
+    const result = await sequery.exec(sql, {replacements});
+    console.log(result[0].id) // 2
+}
 ```
 
-.exec(sql, replacements) // replacements = {id: 1}
 ```js
-const sql = `select * from ${table} m where id > :id`;
-const result = await sequery.exec(sql, {id: 1});
-result.length // 2
+async function () {
+    const sql = `select * from ${table} m where id > :id`;
+    const result = await sequery.exec(sql, {id: 1});
+    console.log(result.length) // 2`
+}
 ```
 
-.exec(sql, {templateData}) // templateData = {id: 2}
 ```js
-const sql = `select * from ${table} m where id = {id}`;
-const templateData = {id: 2};
-const result = await sequery.exec(sql, {templateData});
-result[0].id // 2
+async function () {
+    const sql = `select * from ${table} m where id = {id}`;
+    const templateData = {id: 2};
+    const result = await sequery.exec(sql, {templateData});
+    console.log(result[0].id) // 2
+}
 ```
 
-.exec(sql, templateData) // templateData = {id: 1}
 ```js
-const sql = `select * from ${table} m where id > {id}`;
-const result = await sequery.exec(sql, {id: 1});
-result.length // 2
+async function () {
+    const sql = `select * from ${table} m where id > {id}`;
+    const result = await sequery.exec(sql, {id: 1});
+    console.log(result.length) // 2
+}
 ```
 
-.exec(sql, templateData) // templateData = {condition: 'id > 1 and 1 > 0'}
 ```js
-const sql = `select * from ${table} m where {condition}`;
-const result = await sequery.exec(sql, {condition: 'id > 1 and 1 > 0'});
-result.length // 2
+async function () {
+    const sql = `select * from ${table} m where {condition}`;
+    const result = await sequery.exec(sql, {condition: 'id > 1 and 1 > 0'});
+    console.log(result.length) // 2
+}
 ```
 
-.exec(sql, templateData) // templateData = {idCondition: 'id > 1 and 1 > 0', dateCondition: "date >= '2019-03-10'"}
 ```js
-const sql = `select * from ${table} m where {idCondition} and {dateCondition}`;
-const result = await sequery.exec(sql, {idCondition: 'id > 1 and 1 > 0', dateCondition: "date >= '2019-03-10'"});
-result.length // 2
+async function () {
+    const sql = `select * from ${table} m where {idCondition} and {dateCondition}`;
+    const result = await sequery.exec(sql, {idCondition: 'id > 1 and 1 > 0', dateCondition: "date >= '2019-03-10'"});
+    console.log(result.length) // 2
+}
 ```
 
-.exec(sql, {replacements, templateData}) // replacements = {id: 2}, templateData = {condition: 'id > 1'}
 ```js
-const sql = `select * from ${table} m where {condition} and id > :id`;
-const replacements = {id: 2};
-const templateData = {condition: 'id > 1'};
-const result = await sequery.exec(sql, {replacements, templateData});
-result[0].id // 3
+async function () {
+    const sql = `select * from ${table} m where {condition} and id > :id`;
+    const replacements = {id: 2};
+    const templateData = {condition: 'id > 1'};
+    const result = await sequery.exec(sql, {replacements, templateData});
+    console.log(result[0].id) // 3
+}
 ```
 
-.exec(sql, templateData) // templateData = {id: 1, table}
 ```js
-const sql = `select * from {table} m where id > {id}`;
-const result = await sequery.exec(sql, {id: 1, table});
-result.length // 2
+async function () {
+    const sql = `select * from {table} m where id > {id}`;
+    const result = await sequery.exec(sql, {id: 1, table});
+    console.log(result.length) // 2
+}
 ```
 
-.exec(sql, {beforeExec}) // return {sql: 'select 1 as id'}
 ```js
-const sql = `select * from ${table} m where {condition} and id > :id`;
-const beforeExec = ({sql}) => {
-    sql = 'select 1 as id';
-    return {sql};
-};
+async function () {
+    const sql = `select * from ${table} m where {condition} and id > :id`;
+    const beforeExec = ({sql}) => {
+        sql = 'select 1 as id';
+        return {sql};
+    };
 
-const result = await sequery.exec(sql, {beforeExec});
-result[0].id // 1
+    const result = await sequery.exec(sql, {beforeExec});
+    console.log(result[0].id) // 1
+}
 ```
 
-.exec(sql, beforeExec) // return {sql: 'select 1 as id'}
 ```js
-const sql = `select * from ${table} m where {condition} and id > :id`;
-const beforeExec = ({sql}) => {
-    sql = 'select 1 as id';
-    return {sql};
-};
+async function () {
+    const sql = `select * from ${table} m where {condition} and id > :id`;
+    const beforeExec = ({sql}) => {
+        sql = 'select 1 as id';
+        return {sql};
+    };
 
-const result = await sequery.exec(sql, beforeExec);
-result[0].id // 1
+    const result = await sequery.exec(sql, beforeExec);
+    console.log(result[0].id) // 1
+}
 ```
 
-.exec(sql, beforeExec) // return undefined
 ```js
-const sql = `select * from ${table} m`;
-const beforeExec = () => {
-    return undefined;
-};
+async function () {
+    const sql = `select * from ${table} m`;
+    const beforeExec = () => {
+        return undefined;
+    };
 
-const result = await sequery.exec(sql, beforeExec);
-result.length // 3
+    const result = await sequery.exec(sql, beforeExec);
+    console.log(result.length) // 3
+}
 ```
 
-.exec(sql, {afterExec}) // result.push(5)
 ```js
-const sql = `select * from ${table} m where id > :id`;
-const afterExec = (result) => {
-    result.push(5);
-};
+async function () {
+    const sql = `select * from ${table} m where id > :id`;
+    const afterExec = (result) => {
+        result.push(5);
+    };
 
-const result = await sequery.exec(sql, {id: 2}, {afterExec});
-result.length // 2
+    const result = await sequery.exec(sql, {id: 2}, {afterExec});
+    console.log(result.length) // 2
+}
 ```
 
-.exec(sql, afterExec) // result.push(5)
 ```js
-const sql = `select * from ${table} m where id > :id`;
-const afterExec = (result) => {
-    result.push(5);
-};
+async function () {
+    const sql = `select * from ${table} m where id > :id`;
+    const afterExec = (result) => {
+        result.push(5);
+    };
 
-const result = await sequery.exec(sql, {id: 2}, afterExec);
-result.length // 2
+    const result = await sequery.exec(sql, {id: 2}, afterExec);
+    console.log(result.length) // 2
+}
 ```
 
-.exec(sql, afterExec) // return result = []
 ```js
-const sql = `select * from ${table} m where id > :id`;
-const afterExec = (result) => {
-    result = [];
-    return result;
-};
+async function () {
+    const sql = `select * from ${table} m where id > :id`;
+    const afterExec = (result) => {
+        result = [];
+        return result;
+    };
 
-const result = await sequery.exec(sql, {id: 2}, afterExec);
-result.length // 0
+    const result = await sequery.exec(sql, {id: 2}, afterExec);
+    console.log(result.length) // 0
+}
 ```
 
-.exec(sql, afterExec) // return result = []
 ```js
-const sql = `select * from ${table} m where id > :id`;
-const afterExec = (result) => {
-    result = [];
-    return result;
-};
+async function () {
+    const sql = `select * from ${table} m where id > :id`;
+    const afterExec = (result) => {
+        result = [];
+        return result;
+    };
 
-const result = await sequery.exec(sql, {id: 2}, afterExec);
-result.length // 0
+    const result = await sequery.exec(sql, {id: 2}, afterExec);
+    console.log(result.length) // 0
+}
 ```
 
-.exec(sql) // delimiter $$
 ```js
-const sql = `
-    delimiter $$
-    drop function if exists fn_sequelize_raw_query $$
-    create function fn_sequelize_raw_query(i int) returns int deterministic
-    begin
-        declare i_return int;
-        set i_return = i + 1;
-        return i_return;
-    end;
-    $$
-    delimiter ;
-    select fn_sequelize_raw_query(1) as result;
-`;
+async function () {
+    const sql = `
+        delimiter $$
+        drop function if exists fn_sequelize_raw_query $$
+        create function fn_sequelize_raw_query(i int) returns int deterministic
+        begin
+            declare i_return int;
+            set i_return = i + 1;
+            return i_return;
+        end;
+        $$
+        delimiter ;
+        select fn_sequelize_raw_query(1) as result;
+    `;
 
-const result = await sequery.exec(sql);
-result[0].result // 2
+    const result = await sequery.exec(sql);
+    console.log(result[0].result) // 2
+}
 ```
 
-### .getWhereConditions(where)
+### .getWhereConditions(where) [demo](./test/mysql/queryGenerator.test.js)
 
-.getWhereConditions(where) // where = {"id": 2}
 ```js
-const where = {"id": 2};
-const whereStr = sequery.getWhereConditions(where);
-whereStr // '`id` = 2'
+async function () {
+    const where = {"id": 2};
+    const whereStr = sequery.getWhereConditions(where);
+    console.log(whereStr) // '`id` = 2'
+}
 ```
 
-.getWhereConditions(where, tableAs) // where = {"id": 2}, tableAs = 'm'
 ```js
-const where = {"id": 2};
-const tableAs = 'm';
-const whereStr = sequery.getWhereConditions(where, tableAs);
-whereStr // '`m`.`id` = 2'
+async function () {
+    const where = {"id": 2};
+    const tableAs = 'm';
+    const whereStr = sequery.getWhereConditions(where, tableAs);
+    console.log(whereStr) // '`m`.`id` = 2'
+}
 ```
 
-.getWhereConditions(where) // where = '{"id": 2}'
 ```js
-const where = '{"id": 2}';
-const whereStr = sequery.getWhereConditions(where);
-whereStr // '`id` = 2'
+async function () {
+    const where = '{"id": 2}';
+    const whereStr = sequery.getWhereConditions(where);
+    console.log(whereStr) // '`id` = 2'
+}
 ```
 
-.getWhereConditions(where) // where = {"id": {$gt: 2}}
 ```js
-const where = {"id": {$gt: 2}};
-const whereStr = sequery.getWhereConditions(where);
-whereStr // '`id` > 2'
+async function () {
+    const where = {"id": {$gt: 2}};
+    const whereStr = sequery.getWhereConditions(where);
+    console.log(whereStr) // '`id` > 2'
+}
 ```
 
-.getWhereConditions(where) // where = {id: {[Op.or]: {[Op.lt]: 1000, [Op.eq]: null}}}
 ```js
-const Op = sequery.Sequelize.Op;
-const where = {
-    id: {
-        [Op.or]: {
-            [Op.lt]: 1000,
-            [Op.eq]: null
+async function () {
+    const Op = sequery.Sequelize.Op;
+    const where = {
+        id: {
+            [Op.or]: {
+                [Op.lt]: 1000,
+                [Op.eq]: null
+            }
         }
-    }
-};
+    };
 
-const whereStr = sequery.getWhereConditions(where);
-whereStr // '(`id` < 1000 OR `id` IS NULL)'
+    const whereStr = sequery.getWhereConditions(where);
+    console.log(whereStr) // '(`id` < 1000 OR `id` IS NULL)'
+}
 ```
 
-### .getOrderClause(order)
+### .getOrderClause(order) [demo](./test/mysql/queryGenerator.test.js)
 
-.getOrderClause(order) // order = 'id'
 ```js
-const order = 'id';
-const orderStr = sequery.getOrderClause(order);
-orderStr // ' order by `id`'
+async function () {
+    const order = 'id';
+    const orderStr = sequery.getOrderClause(order);
+    console.log(orderStr) // ' order by `id`'
+}
 ```
 
-.getOrderClause(order) // order = 'type, name desc'
 ```js
-const order = 'type, name desc';
-const orderStr = sequery.getOrderClause(order);
-orderStr // ' order by `type`, `name` desc'
+async function () {
+    const order = 'type, name desc';
+    const orderStr = sequery.getOrderClause(order);
+    console.log(orderStr) // ' order by `type`, `name` desc'
+}
 ```
 
-.getOrderClause(order) // order = ['type', 'name desc']
 ```js
-const order = ['type', 'name desc'];
-const orderStr = sequery.getOrderClause(order);
-orderStr // ' order by `type`, `name` desc'
+async function () {
+    const order = ['type', 'name desc'];
+    const orderStr = sequery.getOrderClause(order);
+    console.log(orderStr) // ' order by `type`, `name` desc'
+}
 ```
 
-.getOrderClause(order) // order = [['type'], ['name', 'desc']]
 ```js
-const order = [['type'], ['name', 'desc']];
-const orderStr = sequery.getOrderClause(order);
-orderStr // ' order by `type`, `name` desc'
+async function () {
+    const order = [['type'], ['name', 'desc']];
+    const orderStr = sequery.getOrderClause(order);
+    console.log(orderStr) // ' order by `type`, `name` desc'
+}
 ```
 
-.getOrderClause(order, tableAs) // order = ['type', 'name desc'], tableAs = 'm'
 ```js
-const order = ['type', 'name desc'];
-const tableAs = 'm';
-const orderStr = sequery.getOrderClause(order, tableAs);
-orderStr // ' order by `m`.`type`, `m`.`name` desc'
+async function () {
+    const order = ['type', 'name desc'];
+    const tableAs = 'm';
+    const orderStr = sequery.getOrderClause(order, tableAs);
+    console.log(orderStr) // ' order by `m`.`type`, `m`.`name` desc'
+}
 ```
 
-### .getGroupClause(group)
+### .getGroupClause(group) [demo](./test/mysql/queryGenerator.test.js)
 
-.getGroupClause(group) // group = 'id'
 ```js
-const group = 'id';
-const groupStr = sequery.getGroupClause(group);
-groupStr // ' group by `id`'
+async function () {
+    const group = 'id';
+    const groupStr = sequery.getGroupClause(group);
+    console.log(groupStr) // ' group by `id`'
+}
 ```
 
-### .getLimitClause(options)
+### .getLimitClause(options) [demo](./test/mysql/queryGenerator.test.js)
 
-.getLimitClause(options) // options = {order: 'id', limit: 10, offset: 5}
 ```js
-const options = {order: 'id', limit: 10, offset: 5};
-const limitStr = sequery.getLimitClause(options);
-limitStr // ' order by `id` limit 5, 10'
+async function () {
+    const options = {order: 'id', limit: 10, offset: 5};
+    const limitStr = sequery.getLimitClause(options);
+    console.log(limitStr) // ' order by `id` limit 5, 10'
+}
 ```
 
-.getLimitClause(options, tableAs) // options = {order: 'id', limit: 10, offset: 5}, tableAs = 'm'
 ```js
-const options = {order: 'id', tableAs: 'm', limit: 10, offset: 5};
-const tableAs = 'm';
-const limitStr = sequery.getLimitClause(options, tableAs);
-limitStr // ' order by `m`.`id` limit 5, 10'
+async function () {
+    const options = {order: 'id', tableAs: 'm', limit: 10, offset: 5};
+    const tableAs = 'm';
+    const limitStr = sequery.getLimitClause(options, tableAs);
+    console.log(limitStr) // ' order by `m`.`id` limit 5, 10'
+}
 ```
 
 ## Config
@@ -369,7 +401,7 @@ const config = {
 };
 ```
 
-### config.isSimplifyResult
+### config.isSimplifyResult [demo](./test/generic/config.isSimplifyResult.test.js)
 
 If it is true, simplify the result:
     If the result array has only one object element:
@@ -382,9 +414,13 @@ If it is true, simplify the result:
 config.isSimplifyResult = true;
 sequery.init(config);
 
-const sql = `select * from ${table} m limit 1`;
-const result = await sequery.do(sql);
-result.id // 1
+...
+
+async function () {
+    const sql = `select * from ${table} m limit 1`;
+    const result = await sequery.do(sql);
+    console.log(result.id) // 1
+}
 ```
 
 **For one field**
@@ -393,12 +429,16 @@ result.id // 1
 config.isSimplifyResult = true;
 sequery.init(config);
 
-const sql = `select id from ${table} m limit 1`;
-const result = await sequery.do(sql);
-result // 1
+...
+
+async function () {
+    const sql = `select id from ${table} m limit 1`;
+    const result = await sequery.do(sql);
+    console.log(result) // 1
+}
 ```
 
-### config.beforeExec
+### config.beforeExec [demo](./test/generic/config-hooks.test.js)
 
 ```js
 config.beforeExec = ({sql, replacements}) => {
@@ -407,12 +447,16 @@ config.beforeExec = ({sql, replacements}) => {
 };
 sequery.init(config);
 
-const sql = `select * from ${table} m`;
-const result = await sequery.do(sql);
-result.length // 1
+...
+
+async function () {
+    const sql = `select * from ${table} m`;
+    const result = await sequery.do(sql);
+    console.log(result.length) // 1
+}
 ```
 
-### config.afterExec
+### config.afterExec [demo](./test/generic/config-hooks.test.js)
 
 ```js
 config.afterExec = (result) => {
@@ -424,12 +468,16 @@ config.afterExec = (result) => {
 };
 sequery.init(config);
 
-const sql = `select * from ${table} m`;
-const result = await sequery.do(sql);
-result.length // 2
+...
+
+async function () {
+    const sql = `select * from ${table} m`;
+    const result = await sequery.do(sql);
+    console.log(result.length) // 2
+}
 ```
 
-### config.enableGlobal
+### config.enableGlobal [demo](./test/generic/config.enableGlobal.test.js)
 
 If it is true, save the data to global.__sequelize_raw_query.
 
