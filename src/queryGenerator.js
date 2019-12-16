@@ -1,16 +1,11 @@
 
 const Sequelize = require('sequelize');
-const path = require('path');
-
 const config = require('./config');
 
-// The absolute path of this file:
-// ./node_modules/sequelize-raw-query/src/queryGenerator.js
-const root = path.resolve(module.filename, '../../../');
-
 // Based on sequelize 5.9.4
-const AbstractQueryGenerator = require(root + '/sequelize/lib/dialects/abstract/query-generator');
-const MSSQLQueryGenerator = require(root + '/sequelize/lib/dialects/mssql/query-generator');
+const pathOfDialects = __dirname + '/../node_modules/sequelize/lib/dialects';
+const AbstractQueryGenerator = require(pathOfDialects + '/abstract/query-generator');
+const MSSQLQueryGenerator = require(pathOfDialects + '/mssql/query-generator');
 
 const isHasSymbol = (where) => {
 	if (Object.getOwnPropertySymbols(where).length) {
