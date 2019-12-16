@@ -238,14 +238,17 @@ const prepare = {
 
 		// Fetch field name (":a" => "a")
 		const fields = params.map(param => param.substr(1));
-		const replacementsKeys = Object.keys(replacements);
+		let keys = Object.keys(replacements);
+
+		// Filter undefined fields in replacements
+		keys = keys.filter(key => replacements[key] !== undefined);
 
 		// Delete fields which do not exist in replacements
 		let i = fields.length;
 		while (i --) { // Delete from back to front
 
 			// If the current field is not found in replacements, delete it
-			if (replacementsKeys.indexOf(fields[i]) === -1) {
+			if (keys.indexOf(fields[i]) === -1) {
 				fields.splice(i, 1); //
 			}
 		}
