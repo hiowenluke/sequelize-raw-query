@@ -6,10 +6,6 @@
   "scripts": {
     "test": "mocha --exit"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hiowenluke/sequelize-raw-query.git"
-  },
   "author": "hi.owen.luke@gmail.com",
   "license": "MIT",
   "keywords": [
@@ -17,13 +13,10 @@
     "raw query",
     "sql statements"
   ],
-  "bugs": {
-    "url": "https://github.com/hiowenluke/sequelize-raw-query/issues"
-  },
-  "homepage": "https://github.com/hiowenluke/sequelize-raw-query#readme",
   "dependencies": {
     "kdo": "^1.7.17",
     "mysql2": "^1.6.5",
+    "nmpath": "^0.1.2",
     "sequelize": "5.15.1",
     "tedious": "^6.2.0"
   },
@@ -31,5 +24,13 @@
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "superagent": "^4.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hiowenluke/sequelize-raw-query.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hiowenluke/sequelize-raw-query/issues"
+  },
+  "homepage": "https://github.com/hiowenluke/sequelize-raw-query#readme"
 }
