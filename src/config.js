@@ -107,7 +107,7 @@ const me = {
 	__getConfigData() {
 		const data = this.enableGlobal ? global[myGlobalName] : this.data;
 
-		if (!data) {
+		if (!data || !data.config) {
 			throw new Error('Please init sequelize-raw-query first');
 		}
 
