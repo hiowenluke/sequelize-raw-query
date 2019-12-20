@@ -1,6 +1,6 @@
 {
   "name": "sequelize-raw-query",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Sequelize-raw-query (sequery) executes raw sql statements, supports where, order and limit objects which sequelize.query() does not. Sequery provides templateData which is more friendly than replacements.",
   "main": "index.js",
   "scripts": {
