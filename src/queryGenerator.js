@@ -2,8 +2,11 @@
 const Sequelize = require('sequelize');
 const config = require('./config');
 
+const nmpath = require('nmpath');
+const node_modules = nmpath();
+
 // Based on sequelize 5.9.4
-const pathOfDialects = __dirname + '/../node_modules/sequelize/lib/dialects';
+const pathOfDialects = node_modules + '/sequelize/lib/dialects';
 const AbstractQueryGenerator = require(pathOfDialects + '/abstract/query-generator');
 const MSSQLQueryGenerator = require(pathOfDialects + '/mssql/query-generator');
 
