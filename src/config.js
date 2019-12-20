@@ -97,24 +97,24 @@ const me = {
 			};
 		}
 
-		this.set(cfg);
+		this.set(cfg, true);
 	},
 
 	reset() {
 		Object.assign(this, defaultValues);
 	},
 
-	__getConfigData() {
+	__getConfigData(isInit) {
 		const data = this.enableGlobal ? global[myGlobalName] : this.data;
 
-		if (!data || !data.config) {
+		if (!isInit && (!data || !data.config)) {
 			throw new Error('Please init sequelize-raw-query first');
 		}
 
 		return data;
 	},
 
-	set(cfg) {
+	set(cfg, isInit) {
 		const config = Object.assign(this, cfg);
 
 		// Disable Sequelize logs in testing
@@ -122,7 +122,7 @@ const me = {
 			config.logging = false;
 		}
 
-		this.__getConfigData().config = config;
+		this.__getConfigData(isInit).config = config;
 	},
 
 	get() {
