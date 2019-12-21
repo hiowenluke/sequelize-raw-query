@@ -14,7 +14,7 @@
     "sql statements"
   ],
   "dependencies": {
-    "kdo": "^1.7.17",
+    "kdo": "^1.8.1",
     "mysql2": "^1.6.5",
     "nmpath": "^0.1.2",
     "sequelize": "5.15.1",
