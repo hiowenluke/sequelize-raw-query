@@ -106,7 +106,7 @@ const prepare = {
 		}
 
 		// Save to this.args to pass them to the next functions for kdo
-		this.setArgs({sql, fieldValues, hooks});
+		this.pass({sql, fieldValues, hooks});
 	},
 
 	// ------------------------------------------------------------------------
@@ -147,7 +147,7 @@ const prepare = {
 		}
 
 		// Save replacements and templateData to this.args
-		this.setArgs({...okValues});
+		this.pass({...okValues});
 	},
 
 	// ------------------------------------------------------------------------
@@ -169,7 +169,7 @@ const prepare = {
 			return templateData[capture];
 		});
 
-		this.setArgs({sql});
+		this.pass({sql});
 	},
 
 	// ------------------------------------------------------------------------
@@ -178,7 +178,7 @@ const prepare = {
 	fetchCommandType({sql}) {
 		const temp = sql.match(/^\s*\b(insert|update|delete)\b/i);
 		const commandType = temp ? temp[0].toLocaleLowerCase() : '';
-		this.setArgs({commandType});
+		this.pass({commandType});
 	},
 
 	// ------------------------------------------------------------------------
@@ -250,7 +250,7 @@ const prepare = {
 		// The final sql statement
 		sql = sql.replace(setStr, newSetStr);
 
-		this.setArgs({sql});
+		this.pass({sql});
 	},
 
 	beforeExec({sql, replacements, hooks}) {
@@ -260,8 +260,8 @@ const prepare = {
 		const newArgs = beforeExec({sql, replacements});
 		if (newArgs && typeof newArgs === 'object') {
 			const {sql, replacements} = newArgs;
-			sql && this.setArgs({sql});
-			replacements && this.setArgs({replacements});
+			sql && this.pass({sql});
+			replacements && this.pass({replacements});
 		}
 	},
 
@@ -287,7 +287,7 @@ const prepare = {
 			sql = [sql];
 		}
 
-		this.setArgs({sqlArr: sql});
+		this.pass({sqlArr: sql});
 	},
 
 	return() {
@@ -319,7 +319,7 @@ const fetchData = {
 			return result.affectedRows;
 		}
 
-		this.setArgs({result});
+		this.pass({result});
 	},
 
 	afterExec({result, hooks}) {
@@ -329,7 +329,7 @@ const fetchData = {
 		const newResult = afterExec(result);
 
 		// If there is a new result, use it
-		newResult && this.setArgs({result: newResult});
+		newResult && this.pass({result: newResult});
 	},
 
 	simplifyTheResultIfNeeded({result}) {
