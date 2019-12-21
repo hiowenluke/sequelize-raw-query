@@ -346,6 +346,10 @@ const fetchData = {
 		}
 
 		return result;
+	},
+
+	return({result}) {
+		return result;
 	}
 };
 
