@@ -345,10 +345,6 @@ const fetchData = {
 			result = row;
 		}
 
-		this.setArgs({result});
-	},
-
-	return({result}) {
 		return result;
 	}
 };
