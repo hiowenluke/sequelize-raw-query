@@ -175,19 +175,6 @@ const prepare = {
 	// ------------------------------------------------------------------------
 	// Fetch commandType
 	// ------------------------------------------------------------------------
-	// If the action type is insert/update/delete, add the commandType parameter
-	// so that sequelize returns a more accurate result of the operation.
-
-	// Refer to the following comparison:
-
-	// ........................................................................
-	// action	w/ type			w/ type			w/o type		w/o type
-	//			[has result]	[no result]		[has result]	[no result]
-	// ........................................................................
-	// insert	[[], 1]			failed			[undefined, 1]	failed
-	// update	[undefined, 1]	[undefined, 0]	[[], []]		[[], []]
-	// delete	undefined		undefined		[[], []]		[[], []]
-	// ........................................................................
 	fetchCommandType({sql}) {
 		const temp = sql.match(/^\s*\b(insert|update|delete)\b/i);
 		const commandType = temp ? temp[0].toLocaleLowerCase() : '';
@@ -315,35 +302,21 @@ const fetchData = {
 		// Use the "raw" parameter to indicate the execution of the raw query
 		const seqOptions = {replacements, raw: true};
 
-		// Append to seqOptions if there is a commandType (insert/delete/update)
-		if (commandType) {
-			seqOptions.type = Sequelize.QueryTypes[commandType.toUpperCase()];
-		}
-
 		const sequelize = config.getSequelize();
 		let result;
 
+		// Only use the last result
 		for (let i = 0; i < sqlArr.length; i ++) {
 			const sql = sqlArr[i];
 			if (sql.replace(/(^\s+)|(\s+$)/g, '') === '') continue;
 			result = await sequelize.query(sql, seqOptions);
 		}
 
-		// If it is delete, the result is null, then return null
-		if (!result) return null;
+		result = result[0];
 
-		// If it is insert/update, take the value from result[1]
-		// Note:
-		// 		Although the expression can be abbreviated as commandType (because
-		// 		the delete has been filtered before, then the commandType must be
-		// 		only insert or update), but the semantics are not clear. It will
-		// 		takes a while to read the code, so it is better to write it here.
-		if (commandType === 'insert' || commandType === 'update') {
-			result = result[1];
-		}
-		else {
-			// Fetch data from [0] if it is another operation (select or exec stored procedure, etc.)
-			result = result[0];
+		// Return the result immediately for insert, update and delete
+		if (['insert', 'update', 'delete'].indexOf(commandType) >= 0) {
+			return result.affectedRows;
 		}
 
 		this.setArgs({result});
